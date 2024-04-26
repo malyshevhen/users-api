@@ -2,9 +2,9 @@ package com.github.malyshevhen.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public class EntityAlreadyExistsExeption extends BaseApplicationException {
+public class EntityAlreadyExistsException extends BaseApplicationException {
 
-    public EntityAlreadyExistsExeption(String errorMessage) {
+    public EntityAlreadyExistsException(String errorMessage) {
         super(errorMessage, HttpStatus.BAD_REQUEST);
     }
 }

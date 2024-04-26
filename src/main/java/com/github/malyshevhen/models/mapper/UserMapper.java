@@ -1,11 +1,12 @@
 package com.github.malyshevhen.models.mapper;
 
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
 import com.github.malyshevhen.dto.UserInfo;
 import com.github.malyshevhen.dto.UserRegistrationForm;
 import com.github.malyshevhen.dto.UserUpdateForm;
 import com.github.malyshevhen.models.User;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {

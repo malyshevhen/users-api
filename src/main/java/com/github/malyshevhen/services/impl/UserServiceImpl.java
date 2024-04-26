@@ -1,5 +1,15 @@
 package com.github.malyshevhen.services.impl;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.Objects;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.github.malyshevhen.exceptions.EntityAlreadyExistsException;
 import com.github.malyshevhen.exceptions.EntityNotFoundException;
 import com.github.malyshevhen.exceptions.UserValidationException;
@@ -9,15 +19,6 @@ import com.github.malyshevhen.repositories.UserRepository;
 import com.github.malyshevhen.services.UserService;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor

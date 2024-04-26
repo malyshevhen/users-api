@@ -142,6 +142,16 @@
                                 <performBeanValidation>true</performBeanValidation>
                                 <documentationProvider>none</documentationProvider>
                             </configOptions>
+                            <schemaMappings>
+                                PageableObject=org.springframework.data.domain.Pageable,
+                                Address=com.github.malyshevhen.models.Address,
+                                ErrorResponse=com.github.malyshevhen.exceptions.ErrorResponse,
+                            </schemaMappings>
+                            <typeMappings>
+                                <typeMapping>
+                                    UsersPage=org.springframework.data.domain.Page&lt;com.github.malyshevhen.dto.UserInfo&gt;
+                                </typeMapping>
+                            </typeMappings>
                         </configuration>
                     </execution>
                 </executions>

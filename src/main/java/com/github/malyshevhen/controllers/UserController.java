@@ -1,5 +1,12 @@
 package com.github.malyshevhen.controllers;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.github.malyshevhen.api.UsersApi;
 import com.github.malyshevhen.dto.UpdateEmailForm;
 import com.github.malyshevhen.dto.UserInfo;
 import com.github.malyshevhen.dto.UserRegistrationForm;
@@ -7,19 +14,10 @@ import com.github.malyshevhen.dto.UserUpdateForm;
 import com.github.malyshevhen.models.Address;
 import com.github.malyshevhen.models.mapper.UserMapper;
 import com.github.malyshevhen.services.UserService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.github.malyshevhen.api.UsersApi;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController implements UsersApi {
 

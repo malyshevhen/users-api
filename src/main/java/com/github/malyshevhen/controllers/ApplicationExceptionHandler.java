@@ -14,15 +14,50 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+/**
+ * Provides a centralized exception handling mechanism for the application.
+ *
+ * @author Evhen Malysh
+ */
 @RestControllerAdvice
 public class ApplicationExceptionHandler {
 
+    /**
+     * Handles custom application exceptions and returns a response with the
+     * appropriate HTTP status code.
+     *
+     * This method handles exceptions of type {@link BasicApplicationException},
+     * which represent custom application-specific exceptions.
+     * It creates an {@link ErrorResponse} object with the exception message
+     * and returns it with the HTTP status code specified in the exception.
+     *
+     * @param ex The {@link BaseApplicationException} to handle.
+     * @return A `ResponseEntity` containing an `ErrorResponse` with the exception
+     *         message and the HTTP status code specified in the exception.
+     */
     @ExceptionHandler(BaseApplicationException.class)
     public ResponseEntity<ErrorResponse> handleCustomException(final BaseApplicationException ex) {
         ErrorResponse response = new ErrorResponse(ex.getMessage());
         return new ResponseEntity<>(response, ex.getStatus());
     }
 
+    /**
+     * Handles various types of bad request exceptions and returns a 400 Bad Request
+     * response with the exception message.
+     *
+     * This method handles the following exception types:
+     * - {@link ConstraintViolationException}
+     * - {@link IllegalArgumentException}
+     * - {@link MissingServletRequestParameterException}
+     * - {@link MethodArgumentTypeMismatchException}
+     * - {@link MethodArgumentNotValidException}
+     * - {@link HttpMessageNotReadableException}
+     * - {@link PropertyReferenceException}
+     *
+     * @param ex The exception to handle.
+     * @return A ResponseEntity containing an ErrorResponse with the exception
+     *         message and a 400 Bad Request status.
+     */
     @ExceptionHandler({
             ConstraintViolationException.class,
             IllegalArgumentException.class,
@@ -30,7 +65,7 @@ public class ApplicationExceptionHandler {
             MethodArgumentTypeMismatchException.class,
             MethodArgumentNotValidException.class,
             HttpMessageNotReadableException.class,
-            PropertyReferenceException.class})
+            PropertyReferenceException.class })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorResponse> handleBadRequest(final Exception ex) {
         ErrorResponse response = new ErrorResponse(ex.getMessage());
@@ -43,7 +78,7 @@ public class ApplicationExceptionHandler {
      *
      * @param ex The server exception to handle.
      * @return A ResponseEntity containing an error response
-     * with the exception message and timestamp.
+     *         with the exception message and timestamp.
      */
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

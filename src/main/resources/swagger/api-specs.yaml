@@ -1,0 +1,473 @@
+openapi: 3.0.1
+
+info:
+  title: Users API server
+  version: v1.0.0
+
+servers:
+  - url: http://localhost:8080/api
+
+tags:
+  - name: Users
+    description: Endpoints for managing users
+
+paths:
+  /users:
+    get:
+      tags:
+        - Users
+      operationId: getAll
+      summary: Retrieve a specific page of users
+      description: |
+        This endpoint allows you to retrieve a specific page of users 
+        with customizable pagination settings using the query parameters. 
+        The available parameters are:
+        - `page` (integer): The page number to retrieve (starting from 1).
+        - `size` (integer): The number of users per page.
+        - `sort` (string): Sort the results by the specified field name 
+        and direction ('asc' for ascending, 'desc' for descending). 
+        If direction is not provided, 'asc' will be used by default.
+      parameters:
+        - name: pageable
+          in: query
+          description: Pagination settings
+          schema:
+            $ref: "#/components/schemas/PageableObject"
+      responses:
+        "200":
+          description: OK. Successful retrieval of users page.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsersPage"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    post:
+      tags:
+        - Users
+      operationId: registerUser
+      summary: Create a new user.
+      description: This endpoint allows you to register a new user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRegistrationForm"
+      responses:
+        "201":
+          description: Created. User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserInfo"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+  /users/{id}:
+    get:
+      tags:
+        - Users
+      operationId: getById
+      summary: Retrieve a specific user by ID
+      description: This endpoint allows you to retrieve a specific user by ID
+      parameters:
+        - name: id
+          in: path
+          description: Users ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        "200":
+          description: OK. User successfully retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserInfo"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    put:
+      tags:
+        - Users
+      operationId: updateById
+      summary: Update a specific user by ID
+      description: This endpoint allows you to update a specific user by ID
+      parameters:
+        - name: id
+          in: path
+          description: Users ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      requestBody:
+        description: User form for update.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserUpdateForm"
+      responses:
+        "200":
+          description: OK. User successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserInfo"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    delete:
+      tags:
+        - Users
+      operationId: deleteById
+      summary: Delete a specific user by ID
+      description: This endpoint allows you to delete a specific user by ID
+      parameters:
+        - name: id
+          in: path
+          description: Users ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        "204":
+          description: OK. User successfully deleted.
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+  /users/{id}/email:
+    patch:
+      tags:
+        - Users
+      operationId: updateUserEmail
+      summary: Update a specific users email.
+      description: This endpoint allows you to update a specific users email.
+      parameters:
+        - name: id
+          in: path
+          description: Users ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateEmailForm"
+      responses:
+        "200":
+          description: OK. User successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserInfo"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+  /users/{id}/address:
+    patch:
+      tags:
+        - Users
+      operationId: updateUserAddress
+      summary: Update a specific users address.
+      description: This endpoint allows you to update a specific users address.
+      parameters:
+        - name: id
+          in: path
+          description: Users ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Address"
+      responses:
+        "200":
+          description: OK. User successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserInfo"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+
+
+components:
+  schemas:
+    UserInfo:
+      description: Information of the user.
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          description: Id of user.
+          type: integer
+          format: int64
+          minimum: 1
+          example: 1
+        email:
+          description: Users email
+          type: string
+          example: john@email.com
+        firstName:
+          description: First name of user.
+          type: string
+          minLength: 1
+          maxLength: 256
+          example: John
+        lastName:
+          description: Last name of user.
+          type: string
+          minLength: 1
+          maxLength: 256
+          example: Doe
+        birthDate:
+          description: Birth date of the user.
+          type: string
+          format: date
+          example: 1989-08-14
+        address:
+          $ref: "#/components/schemas/Address"
+        phone:
+          description: Users phone number
+          type: string
+    UserRegistrationForm:
+      description: Information of the user.
+      type: object
+      required:
+        - email
+        - firstName
+        - lastName
+        - birthDate
+      additionalProperties: false
+      properties:
+        email:
+          description: Users email
+          type: string
+          pattern: ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$
+          example: john@email.com
+        firstName:
+          description: First name of user.
+          type: string
+          minLength: 1
+          maxLength: 256
+          example: John
+        lastName:
+          description: Last name of user.
+          type: string
+          minLength: 1
+          maxLength: 256
+          example: Doe
+        birthDate:
+          description: Birth date of the user. Must be earlier than current date.
+          type: string
+          format: date
+          example: 1989-08-14
+        address:
+          $ref: "#/components/schemas/Address"
+        phone:
+          description: Users phone number
+          type: string
+    UserUpdateForm:
+      description: Information of the user.
+      type: object
+      required:
+        - email
+        - firstName
+        - lastName
+        - birthDate
+      additionalProperties: false
+      properties:
+        email:
+          description: Users email
+          type: string
+          pattern: ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$
+          example: john@email.com
+        firstName:
+          description: First name of user.
+          type: string
+          minLength: 1
+          maxLength: 256
+          example: John
+        lastName:
+          description: Last name of user.
+          type: string
+          minLength: 1
+          maxLength: 256
+          example: Doe
+        birthDate:
+          description: Birth date of the user. Must be earlier than current date.
+          type: string
+          format: date
+          example: 1989-08-14
+        address:
+          $ref: "#/components/schemas/Address"
+        phone:
+          description: Users phone number
+          type: string
+    UpdateEmailForm:
+      description: User email update form.
+      type: object
+      required:
+        - email
+      additionalProperties: false
+      properties:
+        email:
+          description: Users email
+          type: string
+          pattern: ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$
+          example: john@email.com
+    Address:
+      description: Object that contains address properties.
+      type: object
+      properties:
+        country:
+          type: string
+          minLength: 1
+          maxLength: 256
+          example: Ukraine
+        city:
+          type: string
+          minLength: 1
+          maxLength: 256
+          example: Kyiv
+        street:
+          type: string
+          minLength: 1
+          maxLength: 256
+          example: Khreschatyk
+        number:
+          type: string
+          minLength: 1
+          maxLength: 256
+          example: 1-A
+    UsersPage:
+      description: Object representing a page of users.
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserInfo"
+          description: List of users in the current page.
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of pages.
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of users.
+        last:
+          type: boolean
+          description: Indicates if the current page is the last one.
+        size:
+          type: integer
+          format: int32
+          description: Number of users in the current page.
+        number:
+          type: integer
+          format: int32
+          description: Number of the current page.
+        numberOfElements:
+          type: integer
+          format: int32
+          description: Number of users in the current page.
+        first:
+          type: boolean
+          description: Indicates if the current page is the first one.
+        empty:
+          type: boolean
+          description: Indicates if the page is empty.
+    PageableObject:
+      type: object
+      description: Information about the pagination settings.
+      properties:
+        page:
+          type: integer
+          format: int32
+          description: Current page number.
+        size:
+          type: integer
+          format: int32
+          description: Number of records per page.
+        sort:
+          type: string
+          example: title,DESC
+    ErrorResponse:
+      description: Error message with timestamp
+      type: object
+      additionalProperties: false
+      properties:
+        message:
+          description: Error message
+          type: string
+          minLength: 1
+          maxLength: 255
+        timestamp:
+          description: Timestamp of error in milliseconds since the epoch
+          type: integer
+          format: int64
+          minimum: 1
+
+  responses:
+    NotModified:
+      description: Not modified. Banner name is the same
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    BadRequest:
+      description: Bad request. Invalid image name or ID parameter
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    NotFound:
+      description: Not found.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    InternalServerError:
+      description: Internal server error. Please try again later
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"

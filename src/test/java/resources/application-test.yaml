@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: users-api
+# Pagination configuration 
+  data:
+    web:
+      pageable:
+        default-page-size: 10
+# Datasource configuration for integration tests
+  datasource:
+    url: jdbc:tc:postgresql:16-alpine:///test_db
+    username: postgres
+    password: postgres
+# Show queryes to DB for testing poprouses
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+# Flyway test configurations
+  flyway:
+    locations:
+      - classpath:db/migration
+      - classpath:db/testmigration

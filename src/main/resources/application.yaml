@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: users-api
+# Pagination configuration 
+  data:
+    web:
+      pageable:
+        default-page-size: 10
+# Datasource configuration
+  datasource:
+    url: "${DATABASE_URL:jdbc:postgresql://localhost:5432/users_db}"
+    username: "${DATABASE_USERNAME:postgres}"
+    password: "${DATABASE_PASSWORD:password}"
+
+# Validation constraints
+user:
+  min-age: 18

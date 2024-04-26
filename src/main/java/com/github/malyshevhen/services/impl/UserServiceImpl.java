@@ -1,12 +1,13 @@
 package com.github.malyshevhen.services.impl;
 
-import com.github.malyshevhen.exceptions.EntityAlreadyExistsExeption;
+import com.github.malyshevhen.exceptions.EntityAlreadyExistsException;
 import com.github.malyshevhen.exceptions.EntityNotFoundException;
 import com.github.malyshevhen.exceptions.UserValidationException;
 import com.github.malyshevhen.models.Address;
 import com.github.malyshevhen.models.User;
 import com.github.malyshevhen.repositories.UserRepository;
 import com.github.malyshevhen.services.UserService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -45,8 +46,9 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public User getById(Long id) {
+        var errorMessage = String.format("User with id %d was not found", id);
         return userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(STR."User with id \{id} not found"));
+                .orElseThrow(() -> new EntityNotFoundException(errorMessage));
     }
 
     @Transactional
@@ -95,14 +97,14 @@ public class UserServiceImpl implements UserService {
 
     private void assertThatEmailNotExists(String email) {
         if (userRepository.existsByEmail(email)) {
-            throw new EntityAlreadyExistsExeption("User with this email already registered");
+            throw new EntityAlreadyExistsException("User with this email already registered");
         }
     }
 
     private void assertThatAgeIsLegal(User user) {
         long userAge = ChronoUnit.YEARS.between(user.getBirthDate(), LocalDate.now());
         if (userAge < requiredAge) {
-            var message = STR."Users age must be greater than or equal to \{requiredAge}";
+            var message = String.format("Users age must be greater than or equal to %d", requiredAge);
             throw new UserValidationException(message);
         }
     }

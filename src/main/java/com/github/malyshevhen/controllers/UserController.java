@@ -12,6 +12,7 @@ import com.github.malyshevhen.dto.UserInfo;
 import com.github.malyshevhen.dto.UserRegistrationForm;
 import com.github.malyshevhen.dto.UserUpdateForm;
 import com.github.malyshevhen.models.Address;
+import com.github.malyshevhen.models.DateRange;
 import com.github.malyshevhen.models.mapper.UserMapper;
 import com.github.malyshevhen.services.UserService;
 
@@ -33,7 +34,7 @@ public class UserController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<Page<UserInfo>> getAll(Pageable pageable) {
+    public ResponseEntity<Page<UserInfo>> getAll(Pageable pageable, DateRange dateRange) {
         var users = userService.getAll(pageable)
                 .map(userMapper::toUserInfo);
         return ResponseEntity.ok(users);

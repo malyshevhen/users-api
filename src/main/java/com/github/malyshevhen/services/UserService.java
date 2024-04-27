@@ -41,7 +41,7 @@ public interface UserService {
      * @return a {@link Page} object containing the list of users
      * and page details
      */
-    Page<User> getAll(@NotNull Pageable pageable, DateRange dateRange);
+    Page<User> getAll(@NotNull Pageable pageable, @Valid DateRange dateRange);
 
     /**
      * Gets the user by identifier.

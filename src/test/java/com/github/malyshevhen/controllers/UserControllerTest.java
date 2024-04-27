@@ -1,5 +1,6 @@
 package com.github.malyshevhen.controllers;
 
+import static com.github.malyshevhen.testutils.FakeData.getValidAddress;
 import static com.github.malyshevhen.testutils.FakeData.getValidEmail;
 import static com.github.malyshevhen.testutils.FakeData.getValidUser;
 import static com.github.malyshevhen.testutils.FakeData.getValidUserRegistrationForm;
@@ -41,6 +42,7 @@ import com.github.malyshevhen.dto.UpdateEmailForm;
 import com.github.malyshevhen.dto.UserInfo;
 import com.github.malyshevhen.dto.UserRegistrationForm;
 import com.github.malyshevhen.exceptions.ErrorResponse;
+import com.github.malyshevhen.models.Address;
 import com.github.malyshevhen.models.User;
 import com.github.malyshevhen.models.mapper.UserMapper;
 import com.github.malyshevhen.models.mapper.UserMapperImpl;
@@ -321,5 +323,43 @@ class UserControllerTest {
                                 Arguments.of("invalid@email"),
                                 Arguments.of("invalid.email.com"),
                                 Arguments.of(""));
+        }
+
+        @DisplayName("update user address should return 200 and updated user info")
+        @Test
+        @SneakyThrows
+        void updateUserAddress() {
+                // Given:
+                var id = 1L;
+                var address = getValidAddress();
+
+                var updatedUser = getValidUser();
+                updatedUser.setAddress(address);
+
+                when(userService.updateAddress(anyLong(), any(Address.class))).thenReturn(updatedUser);
+
+                // Execute:
+                var response = mvc.perform(patch(USERS_URL + "/{id}/address", id)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(address)))
+                                .andReturn()
+                                .getResponse();
+
+                // Verify:
+                assertEquals(200, response.getStatus());
+
+                var responseBody = response.getContentAsString();
+                var userInfo = objectMapper.readValue(responseBody, UserInfo.class);
+
+                assertNotNull(userInfo);
+                assertEquals(updatedUser.getId(), userInfo.getId());
+                assertEquals(updatedUser.getEmail(), userInfo.getEmail());
+                assertEquals(updatedUser.getFirstName(), userInfo.getFirstName());
+                assertEquals(updatedUser.getLastName(), userInfo.getLastName());
+                assertEquals(updatedUser.getBirthDate(), userInfo.getBirthDate());
+                assertEquals(address.getStreet(), userInfo.getAddress().getStreet());
+                assertEquals(address.getCity(), userInfo.getAddress().getCity());
+                assertEquals(address.getCountry(), userInfo.getAddress().getCountry());
+                assertEquals(address.getNumber(), userInfo.getAddress().getNumber());
         }
 }

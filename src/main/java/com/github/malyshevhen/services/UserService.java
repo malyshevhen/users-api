@@ -1,5 +1,6 @@
 package com.github.malyshevhen.services;
 
+import com.github.malyshevhen.models.DateRange;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
@@ -35,11 +36,12 @@ public interface UserService {
     /**
      * Retrieve page of users based on given pageable.
      *
-     * @param pageable the pagination details
+     * @param pageable  the pagination details
+     * @param dateRange
      * @return a {@link Page} object containing the list of users
-     *         and page details
+     * and page details
      */
-    Page<User> getAll(@NotNull Pageable pageable);
+    Page<User> getAll(@NotNull Pageable pageable, DateRange dateRange);
 
     /**
      * Gets the user by identifier.

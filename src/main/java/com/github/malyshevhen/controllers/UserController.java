@@ -35,7 +35,7 @@ public class UserController implements UsersApi {
 
     @Override
     public ResponseEntity<Page<UserInfo>> getAll(Pageable pageable, DateRange dateRange) {
-        var users = userService.getAll(pageable)
+        var users = userService.getAll(pageable, dateRange)
                 .map(userMapper::toUserInfo);
         return ResponseEntity.ok(users);
     }

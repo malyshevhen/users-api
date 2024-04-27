@@ -4,8 +4,11 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
+import com.github.malyshevhen.models.DateRange;
+import com.github.malyshevhen.configs.UserConstraints;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +20,7 @@ import com.github.malyshevhen.models.User;
 import com.github.malyshevhen.repositories.UserRepository;
 import com.github.malyshevhen.services.UserService;
 
-import configs.UserConfiguration;
+import com.github.malyshevhen.configs.ApplicationConfig;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -26,7 +29,7 @@ import lombok.RequiredArgsConstructor;
  * users.
  * <p>
  * This service implementation uses a {@link UserRepository} to interact with
- * the underlying data storage and a {@link UserConfiguration} to access
+ * the underlying data storage and a {@link ApplicationConfig} to access
  * application-specific configuration.
  * <p>
  * The service methods perform various validation checks, such as ensuring the
@@ -41,7 +44,7 @@ import lombok.RequiredArgsConstructor;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final UserConfiguration userConfig;
+    private final UserConstraints userConstraints;
 
     /**
      * Saves a new user to the system.
@@ -68,13 +71,18 @@ public class UserServiceImpl implements UserService {
      * If 0 or negative number passed as page size, then it will be set to 10.
      * If the result is empty, returns an empty page.
      *
-     * @param pageable the pagination parameters
+     * @param pageable  the pagination parameters
+     * @param dateRange date range filter for filtering users by age
      * @return a page of users
      */
     @Transactional(readOnly = true)
     @Override
-    public Page<User> getAll(Pageable pageable) {
-        return userRepository.findAll(pageable);
+    public Page<User> getAll(Pageable pageable, DateRange dateRange) {
+        var spec = dateRange == null
+                ? Specification.<User>where(null)
+                : inRange(dateRange);
+
+        return userRepository.findAll(spec, pageable);
     }
 
     /**
@@ -203,11 +211,19 @@ public class UserServiceImpl implements UserService {
      *                                 age
      */
     private void assertThatAgeIsLegal(User user) {
-        int requiredAge = userConfig.getRequiredAge();
+        int requiredAge = userConstraints.getRequiredAge();
         long userAge = ChronoUnit.YEARS.between(user.getBirthDate(), LocalDate.now());
         if (userAge < requiredAge) {
             var message = String.format("Users age must be greater than or equal to %d", requiredAge);
             throw new UserValidationException(message);
         }
+    }
+
+    private Specification<User> inRange(DateRange dateRange) {
+        return (root, query, criteriaBuilder) -> {
+            query.distinct(true);
+            var birthDate = root.get("birthDate").as(LocalDate.class);
+            return criteriaBuilder.between(birthDate, dateRange.from(), dateRange.to());
+        };
     }
 }

@@ -194,10 +194,6 @@
                             <generatorName>spring</generatorName>
                             <apiPackage>com.github.malyshevhen.api</apiPackage>
                             <modelPackage>com.github.malyshevhen.dto</modelPackage>
-                            <generateApiTests>false</generateApiTests>
-                            <generateModelTests>false</generateModelTests>
-                            <generateModelTests>false</generateModelTests>
-                            <generateModelDocumentation>false</generateModelDocumentation>
                             <configOptions>
                                 <useTags>true</useTags>
                                 <useJakartaEe>true</useJakartaEe>
@@ -212,6 +208,7 @@
                                 PageableObject=org.springframework.data.domain.Pageable,
                                 Address=com.github.malyshevhen.models.Address,
                                 ErrorResponse=com.github.malyshevhen.exceptions.ErrorResponse,
+                                DateRange=com.github.malyshevhen.models.DateRange,
                             </schemaMappings>
                             <typeMappings>
                                 <typeMapping>

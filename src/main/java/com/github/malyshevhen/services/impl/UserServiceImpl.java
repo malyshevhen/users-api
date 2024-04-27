@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,6 +17,7 @@ import com.github.malyshevhen.models.User;
 import com.github.malyshevhen.repositories.UserRepository;
 import com.github.malyshevhen.services.UserService;
 
+import configs.UserConfiguration;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -25,9 +25,8 @@ import lombok.RequiredArgsConstructor;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final UserConfiguration userConfig;
 
-    @Value("${user.min-age}")
-    private int requiredAge;
 
     @Transactional
     @Override
@@ -103,6 +102,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private void assertThatAgeIsLegal(User user) {
+        int requiredAge = userConfig.getRequiredAge();
         long userAge = ChronoUnit.YEARS.between(user.getBirthDate(), LocalDate.now());
         if (userAge < requiredAge) {
             var message = String.format("Users age must be greater than or equal to %d", requiredAge);

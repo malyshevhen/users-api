@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 /**
  * A base exception class that represents an application-level error. It
  * provides an HTTP status code associated with the error.
+ * 
+ * @author Evhen Malysh
  */
 public class BaseApplicationException extends RuntimeException {
 

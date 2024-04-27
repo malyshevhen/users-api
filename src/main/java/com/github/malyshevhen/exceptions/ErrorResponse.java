@@ -2,6 +2,8 @@ package com.github.malyshevhen.exceptions;
 
 /**
  * Represents an error response containing a message and a timestamp.
+ * 
+ * @author Evhen Malysh
  */
 public record ErrorResponse(String message, long timestamp) {
 

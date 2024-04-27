@@ -5,7 +5,7 @@ spring:
   data:
     web:
       pageable:
-        default-page-size: 10
+        default-page-size: 20
 # Datasource configuration for integration tests
   datasource:
     url: jdbc:tc:postgresql:16-alpine:///test_db
@@ -22,3 +22,7 @@ spring:
     locations:
       - classpath:db/migration
       - classpath:db/testmigration
+
+# Validation constraints
+user:
+  min-age: 18

@@ -18,6 +18,12 @@ import com.github.malyshevhen.services.UserService;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Provides a REST API for managing user-related operations, including
+ * registration, retrieval, update, and deletion.
+ * 
+ * @author Evhen Malysh
+ */
 @RestController
 @RequiredArgsConstructor
 public class UserController implements UsersApi {
@@ -25,6 +31,18 @@ public class UserController implements UsersApi {
     private final UserService userService;
     private final UserMapper userMapper;
 
+    /**
+     * Registers a new user with the provided registration form data.
+     *
+     * @param userRegistrationForm the user registration form containing the
+     *                             necessary data to create a new user
+     * @return a ResponseEntity containing the newly registered user's information
+     *         and HTTP status:
+     *         Created - 201.
+     *         Bad request - 400. Invalid {@code email} or {@code birthDate},
+     *         or empty {@code firstName} or {@code lastName}
+     *         Internal server error -500.
+     */
     @Override
     public ResponseEntity<UserInfo> registerUser(UserRegistrationForm userRegistrationForm) {
         var userToRegister = userMapper.toUser(userRegistrationForm);
@@ -33,6 +51,18 @@ public class UserController implements UsersApi {
         return ResponseEntity.status(HttpStatus.CREATED).body(userInfo);
     }
 
+    /**
+     * Retrieves a paginated list of user information.
+     *
+     * @param pageable  the pagination parameters. It is optional. If not provided,
+     *                  default page size and 0-based index are used.
+     * @param dateRange the date range to filter users by. It is optional. If not
+     *                  provided, all users will be returned.
+     * @return a page of user information and HTTP status:
+     *         OK - 200.
+     *         Bad request. Invalid {@code pageable} parameters or {@code dateRange}
+     *         Internal server error -500.
+     */
     @Override
     public ResponseEntity<Page<UserInfo>> getAll(Pageable pageable, DateRange dateRange) {
         var users = userService.getAll(pageable, dateRange)
@@ -40,6 +70,16 @@ public class UserController implements UsersApi {
         return ResponseEntity.ok(users);
     }
 
+    /**
+     * Retrieves a user by their unique identifier.
+     *
+     * @param id the unique identifier of the user to retrieve
+     * @return a ResponseEntity containing the user's information and HTTP status:
+     *         OK - 200. The user was found and returned.
+     *         Not Found - 404. No user was found with the given ID.
+     *         Internal Server Error - 500. An error occurred while retrieving the
+     *         user.
+     */
     @Override
     public ResponseEntity<UserInfo> getById(Long id) {
         var user = userService.getById(id);
@@ -47,6 +87,19 @@ public class UserController implements UsersApi {
         return ResponseEntity.ok(userInfo);
     }
 
+    /**
+     * Updates an existing user by their unique identifier.
+     *
+     * @param id             the unique identifier of the user to update
+     * @param userUpdateForm the user update form containing the new data to update
+     *                       the user with
+     * @return a ResponseEntity containing the updated user's information and HTTP
+     *         status:
+     *         OK - 200. The user was successfully updated.
+     *         Not Found - 404. No user was found with the given ID.
+     *         Internal Server Error - 500. An error occurred while updating the
+     *         user.
+     */
     @Override
     public ResponseEntity<UserInfo> updateById(Long id, UserUpdateForm userUpdateForm) {
         var user = userMapper.toUser(userUpdateForm);
@@ -55,6 +108,19 @@ public class UserController implements UsersApi {
         return ResponseEntity.ok(userInfo);
     }
 
+    /**
+     * Updates the email address of an existing user by their unique identifier.
+     *
+     * @param id              the unique identifier of the user to update
+     * @param updateEmailForm the form containing the new email address to update
+     *                        the user with
+     * @return a ResponseEntity containing the updated user's information and HTTP
+     *         status:
+     *         OK - 200. The user's email was successfully updated.
+     *         Not Found - 404. No user was found with the given ID.
+     *         Internal Server Error - 500. An error occurred while updating the
+     *         user's email.
+     */
     @Override
     public ResponseEntity<UserInfo> updateUserEmail(Long id, UpdateEmailForm updateEmailForm) {
         var updatedUser = userService.updateEmail(id, updateEmailForm.getEmail());
@@ -62,6 +128,18 @@ public class UserController implements UsersApi {
         return ResponseEntity.ok(userInfo);
     }
 
+    /**
+     * Updates the address of an existing user by their unique identifier.
+     *
+     * @param id      the unique identifier of the user to update
+     * @param address the new address to update the user with
+     * @return a ResponseEntity containing the updated user's information and HTTP
+     *         status:
+     *         OK - 200. The user's address was successfully updated.
+     *         Not Found - 404. No user was found with the given ID.
+     *         Internal Server Error - 500. An error occurred while updating the
+     *         user's address.
+     */
     @Override
     public ResponseEntity<UserInfo> updateUserAddress(Long id, Address address) {
         var updatedUser = userService.updateAddress(id, address);
@@ -69,6 +147,16 @@ public class UserController implements UsersApi {
         return ResponseEntity.ok(userInfo);
     }
 
+    /**
+     * Deletes a user by their unique identifier.
+     *
+     * @param id the unique identifier of the user to delete
+     * @return a ResponseEntity with HTTP status:
+     *         No Content - 204. The user was successfully deleted.
+     *         Not Found - 404. No user was found with the given ID.
+     *         Internal Server Error - 500. An error occurred while deleting the
+     *         user.
+     */
     @Override
     public ResponseEntity<Void> deleteById(Long id) {
         userService.deleteById(id);

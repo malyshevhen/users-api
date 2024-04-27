@@ -1,28 +1,33 @@
 package com.github.malyshevhen.services.impl;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static com.github.malyshevhen.testutils.FakeData.getValidAddress;
+import static com.github.malyshevhen.testutils.FakeData.getValidUser;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
-import com.github.malyshevhen.models.Address;
-import com.github.malyshevhen.models.User;
 import com.github.malyshevhen.exceptions.EntityAlreadyExistsException;
 import com.github.malyshevhen.exceptions.EntityNotFoundException;
 import com.github.malyshevhen.exceptions.UserValidationException;
+import com.github.malyshevhen.models.User;
 import com.github.malyshevhen.repositories.UserRepository;
 
 import configs.UserConfiguration;
@@ -40,40 +45,26 @@ public class UserServiceImplTest {
     private UserServiceImpl userService;
 
     private User user;
-    private Address address;
 
     @BeforeEach
     void setUp() {
-        address = Address.builder()
-                .street("123 Main St")
-                .city("Anytown")
-                .country("CA")
-                .number("12345")
-                .build();
-        user = User.builder()
-                .id(1L)
-                .firstName("John")
-                .lastName("Doe")
-                .email("john@example.com")
-                .birthDate(LocalDate.of(1990, 1, 1))
-                .address(address)
-                .phone("555-1234")
-                .build();
-
+        user = getValidUser();
     }
 
+    @DisplayName("Test create user with valid data")
     @Test
     void testSave_ValidUser_ShouldSaveUser() {
         when(userRepository.existsByEmail(user.getEmail())).thenReturn(false);
         when(userConfig.getRequiredAge()).thenReturn(18);
         when(userRepository.save(user)).thenReturn(user);
 
-        User savedUser = userService.save(user);
+        var savedUser = userService.save(user);
 
         assertNotNull(savedUser);
         verify(userRepository, times(1)).save(user);
     }
 
+    @DisplayName("Test create user with existing email")
     @Test
     void testSave_ExistingEmail_ShouldThrowException() {
         when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
@@ -82,6 +73,7 @@ public class UserServiceImplTest {
         verify(userRepository, never()).save(any());
     }
 
+    @DisplayName("Test create user with invalid age throws exception")
     @Test
     void testSave_UnderAgeUser_ShouldThrowException() {
         when(userConfig.getRequiredAge()).thenReturn(100);
@@ -90,54 +82,49 @@ public class UserServiceImplTest {
         verify(userRepository, never()).save(any());
     }
 
+    @DisplayName("Test get all users returns page of users")
     @Test
     void testGetAll_ShouldReturnPageOfUsers() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<User> userPage = new PageImpl<>(List.of(user));
+        var pageable = PageRequest.of(0, 10);
+        var userPage = new PageImpl<>(List.of(user));
         when(userRepository.findAll(pageable)).thenReturn(userPage);
 
-        Page<User> result = userService.getAll(pageable);
+        var result = userService.getAll(pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
         assertEquals(user, result.getContent().get(0));
     }
 
+    @DisplayName("Test get user by id returns user")
     @Test
     void testGetById_ExistingUser_ShouldReturnUser() {
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
-        User result = userService.getById(user.getId());
+        var result = userService.getById(user.getId());
 
         assertNotNull(result);
         assertEquals(user, result);
     }
 
+    @DisplayName("Test get user by id not found")
     @Test
     void testGetById_NonExistingUser_ShouldThrowException() {
         when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> userService.getById(user.getId()));
+        assertThrows(EntityNotFoundException.class,
+                () -> userService.getById(user.getId()));
     }
 
+    @DisplayName("Test update user with valid data")
     @Test
     void testUpdateById_ExistingUser_ShouldUpdateUser() {
-        User updatedUser = new User();
-        updatedUser.setFirstName("Jane");
-        updatedUser.setLastName("Smith");
-        updatedUser.setEmail("jane@example.com");
-        updatedUser.setAddress(Address.builder()
-                .country("UA")
-                .city("Kyiv")
-                .street("Bohdana Khmelnytskogo")
-                .number("11-B")
-                .build());
-        updatedUser.setPhone("987-6543");
+        var updatedUser = getValidUser();
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(userRepository.existsByEmail(updatedUser.getEmail())).thenReturn(false);
 
-        User result = userService.updateById(user.getId(), updatedUser);
+        var result = userService.updateById(user.getId(), updatedUser);
 
         assertNotNull(result);
         assertEquals(updatedUser.getFirstName(), result.getFirstName());
@@ -147,44 +134,43 @@ public class UserServiceImplTest {
         assertEquals(updatedUser.getPhone(), result.getPhone());
     }
 
+    @DisplayName("Test update user with existing email throws exception")
     @Test
     void testUpdateById_ExistingEmail_ShouldThrowException() {
-        User updatedUser = new User();
-        updatedUser.setEmail("existing@example.com");
+        var updatedUser = getValidUser();
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(userRepository.existsByEmail(updatedUser.getEmail())).thenReturn(true);
 
-        assertThrows(EntityAlreadyExistsException.class, () -> userService.updateById(user.getId(), updatedUser));
+        assertThrows(EntityAlreadyExistsException.class,
+                () -> userService.updateById(user.getId(), updatedUser));
     }
 
+    @DisplayName("Test update email if no exception is thrown should pass")
     @Test
     void testUpdateEmail_ExistingUser_ShouldUpdateEmail() {
-        String newEmail = "newemail@example.com";
+        var newEmail = "newemail@example.com";
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
-        User result = userService.updateEmail(user.getId(), newEmail);
+        var result = userService.updateEmail(user.getId(), newEmail);
 
         assertNotNull(result);
         assertEquals(newEmail, result.getEmail());
     }
 
+    @DisplayName("Test update address if no exception is thrown should pass")
     @Test
     void testUpdateAddress_ExistingUser_ShouldUpdateAddress() {
-        Address newAddress = Address.builder()
-                .country("UA")
-                .city("Kyiv")
-                .street("Bohdana Khmelnytskogo")
-                .number("11-B")
-                .build();
+        var newAddress = getValidAddress();
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
-        User result = userService.updateAddress(user.getId(), newAddress);
+        var result = userService.updateAddress(user.getId(), newAddress);
 
         assertNotNull(result);
         assertEquals(newAddress, result.getAddress());
     }
 
+    @DisplayName("Test delete user by id")
     @Test
     void testDeleteById_ExistingUser_ShouldDeleteUser() {
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
@@ -194,11 +180,13 @@ public class UserServiceImplTest {
         verify(userRepository, times(1)).delete(user);
     }
 
+    @DisplayName("Test delete user by id not found")
     @Test
     void testDeleteById_NonExistingUser_ShouldThrowException() {
         when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> userService.deleteById(user.getId()));
+        assertThrows(EntityNotFoundException.class,
+                () -> userService.deleteById(user.getId()));
         verify(userRepository, never()).delete(any());
     }
 }

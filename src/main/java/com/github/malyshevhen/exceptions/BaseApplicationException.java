@@ -4,13 +4,16 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public abstract class BaseApplicationException extends RuntimeException {
+/**
+ * A base exception class that represents an application-level error. It
+ * provides an HTTP status code associated with the error.
+ */
+public class BaseApplicationException extends RuntimeException {
 
-    private final String errorMessage;
     private final HttpStatus status;
 
     public BaseApplicationException(String errorMessage, HttpStatus status) {
-        this.errorMessage = errorMessage;
+        super(errorMessage);
         this.status = status;
     }
 }

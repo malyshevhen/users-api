@@ -1,7 +1,5 @@
 package com.github.malyshevhen.configs;
 
-import java.util.Properties;
-
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Value;

@@ -25,8 +25,8 @@ public class ApplicationExceptionHandler {
     /**
      * Handles custom application exceptions and returns a response with the
      * appropriate HTTP status code.
-     *
-     * This method handles exceptions of type {@link BasicApplicationException},
+     * </p>
+     * This method handles exceptions of type {@link BaseApplicationException},
      * which represent custom application-specific exceptions.
      * It creates an {@link ErrorResponse} object with the exception message
      * and returns it with the HTTP status code specified in the exception.
@@ -37,14 +37,15 @@ public class ApplicationExceptionHandler {
      */
     @ExceptionHandler(BaseApplicationException.class)
     public ResponseEntity<ErrorResponse> handleCustomException(final BaseApplicationException ex) {
-        ErrorResponse response = new ErrorResponse(ex.getMessage());
-        return new ResponseEntity<>(response, ex.getStatus());
+        var message = ex.getMessage();
+        var response = new ErrorResponse(message);
+        return ResponseEntity.status(ex.getStatus()).body(response);
     }
 
     /**
      * Handles various types of bad request exceptions and returns a 400 Bad Request
      * response with the exception message.
-     *
+     * </p>
      * This method handles the following exception types:
      * - {@link ConstraintViolationException}
      * - {@link IllegalArgumentException}

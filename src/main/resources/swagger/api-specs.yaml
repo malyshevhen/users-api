@@ -31,8 +31,15 @@ paths:
         - name: pageable
           in: query
           description: Pagination settings
+          required: false
           schema:
             $ref: "#/components/schemas/PageableObject"
+        - name: dateRange
+          in: query
+          description: Date range filter for users created at or between the specified birth dates.
+          required: false
+          schema:
+            $ref: "#/components/schemas/DateRange"
       responses:
         "200":
           description: OK. Successful retrieval of users page.
@@ -224,10 +231,23 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-
-
 components:
   schemas:
+    DateRange:
+      description: Date range filter for querying resources.
+      type: object
+      additionalProperties: false
+      properties:
+        from:
+          description: Start date for filtering.
+          type: string
+          format: date
+          example: "1990-03-27"
+        to:
+          description: End date for filtering.
+          type: string
+          format: date
+          example: "1990-03-27"
     UserInfo:
       description: Information of the user.
       type: object

@@ -3,6 +3,7 @@ package com.github.malyshevhen.services.impl;
 import static com.github.malyshevhen.testutils.FakeData.getValidAddress;
 import static com.github.malyshevhen.testutils.FakeData.getValidEmail;
 import static com.github.malyshevhen.testutils.FakeData.getValidUser;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -104,7 +105,7 @@ public class UserServiceIntegrationTest {
     public void testFindAll_whenDBIsEmpty_thenReturnEmptyList() {
         // Execute:
         var pageable = PageRequest.of(0, 10);
-        var dateRange = new DateRange(LocalDate.of(1990, 1,1), LocalDate.of(2001, 1, 1));
+        var dateRange = new DateRange(LocalDate.of(1990, 1, 1), LocalDate.of(2001, 1, 1));
         var users = userService.getAll(pageable, dateRange);
 
         // Verify:
@@ -131,6 +132,61 @@ public class UserServiceIntegrationTest {
         assertNotNull(users.getSize());
         assertNotNull(users.getNumber());
         assertEquals(savedUser, users.getContent().get(0));
+    }
+
+    @DisplayName("Get all with valid range should return page of users with birth date in this range")
+    @ParameterizedTest(name = "{index}: Get all with valid range {arguments}")
+    @ValueSource(strings = { "1983-01-01,2000-12-29", "1985-01-01,2010-12-29", "1983-01-01,1990-01-01",
+            "1985-01-01,1990-01-01" })
+    public void testFindAll_whenDBHasUsersWithBirthDateInRange_thenReturnTheseUsers(String dateRange) {
+        // Prepare:
+        var validUser1 = getValidUser();
+        validUser1.setBirthDate(LocalDate.of(1985, 1, 1));
+        var savedUser1 = userService.save(validUser1);
+
+        var validUser2 = getValidUser();
+        validUser2.setBirthDate(LocalDate.of(1990, 1, 1));
+        var savedUser2 = userService.save(validUser2);
+
+        var validUser3 = getValidUser();
+        validUser3.setBirthDate(LocalDate.of(1950, 12, 29));
+        var savedUser3 = userService.save(validUser3);
+
+        var pageable = PageRequest.of(0, 10);
+
+        // Execute:
+        var users = userService.getAll(pageable,
+                new DateRange(LocalDate.parse(dateRange.split(",")[0]), LocalDate.parse(dateRange.split(",")[1])));
+        System.out.println("USERS: " + users.getContent());
+
+        // Verify:
+        assertEquals(2, users.getTotalElements());
+        assertTrue(users.hasContent());
+        assertTrue(users.getContent().stream().anyMatch(user -> user.equals(savedUser1)));
+        assertTrue(users.getContent().stream().anyMatch(user -> user.equals(savedUser2)));
+        assertFalse(users.getContent().stream().anyMatch(user -> user.equals(savedUser3)));
+    }
+
+    @DisplayName("Get all with invalid range should throw an exception and do not call the repository method")
+    @ParameterizedTest(name = "{index}: Get all with invalid range {arguments}")
+    @ValueSource(strings = { "2019-01-01,1983-01-01", "1985-01-01,1983-01-01" })
+    public void testFindAll_whenDBHasUsersAndRangeIsInvalid_thenThrowException(String dateRange) {
+        // Prepare:
+        var validUser = getValidUser();
+        userService.save(validUser);
+
+        var pageable = PageRequest.of(0, 10);
+        var from = LocalDate.parse(dateRange.split(",")[0]);
+        var to = LocalDate.parse(dateRange.split(",")[1]);
+
+        // Execute:
+        var exception = assertThrows(IllegalArgumentException.class,
+                () -> userService.getAll(pageable, new DateRange(from, to)));
+
+        // Verify:
+        assertEquals("From date must be before to date", exception.getMessage());
+        assertFalse(userRepository.findAll().isEmpty());
+        assertFalse(userService.getAll(PageRequest.of(0, 10), null).isEmpty());
     }
 
     @DisplayName("Get user by id should return existing user")
@@ -228,7 +284,7 @@ public class UserServiceIntegrationTest {
     }
 
     @DisplayName("Delete by id should throw exception when id is invalid")
-    @ParameterizedTest
+    @ParameterizedTest(name = "{index}: Delete by id {0} should throw an exception")
     @ValueSource(longs = { -1, 0, 1, 100 })
     public void testDeleteById_whenIdIsInvalid_thenThrowException(Long id) {
         // Execute:
@@ -259,7 +315,7 @@ public class UserServiceIntegrationTest {
     }
 
     @DisplayName("Update email should throw exception when id is invalid")
-    @ParameterizedTest
+    @ParameterizedTest(name = "{index}: Update email should throw an exception when id is: {0}")
     @ValueSource(longs = { -1, 0, 1, 100 })
     public void testUpdateEmail_whenIdIsInvalid_thenThrowException(Long id) {
         // Execute:
@@ -289,18 +345,18 @@ public class UserServiceIntegrationTest {
     @Test
     public void testUpdateAddress_whenIdIsValid_thenUpdateAddress() {
         // Prepare:
-         var validUser = getValidUser();
-         var savedUser = userService.save(validUser);
+        var validUser = getValidUser();
+        var savedUser = userService.save(validUser);
 
-         var newAddress = getValidAddress();
+        var newAddress = getValidAddress();
 
-         // Update:
-         userService.updateAddress(savedUser.getId(), newAddress);
+        // Update:
+        userService.updateAddress(savedUser.getId(), newAddress);
 
-         // Verify:
-         var updatedUserOptional = userRepository.findById(savedUser.getId());
-         var updatedUser = updatedUserOptional.get();
-         assertEquals(newAddress, updatedUser.getAddress());
+        // Verify:
+        var updatedUserOptional = userRepository.findById(savedUser.getId());
+        var updatedUser = updatedUserOptional.get();
+        assertEquals(newAddress, updatedUser.getAddress());
     }
 
 }

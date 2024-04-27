@@ -43,6 +43,7 @@ import com.github.malyshevhen.dto.UserInfo;
 import com.github.malyshevhen.dto.UserRegistrationForm;
 import com.github.malyshevhen.exceptions.ErrorResponse;
 import com.github.malyshevhen.models.Address;
+import com.github.malyshevhen.models.DateRange;
 import com.github.malyshevhen.models.User;
 import com.github.malyshevhen.models.mapper.UserMapper;
 import com.github.malyshevhen.models.mapper.UserMapperImpl;
@@ -159,7 +160,7 @@ class UserControllerTest {
 
                 var userPage = new PageImpl<>(List.of(user1, user2));
 
-                when(userService.getAll(any(Pageable.class))).thenReturn(userPage);
+                when(userService.getAll(any(Pageable.class), any(DateRange.class))).thenReturn(userPage);
 
                 // Execute:
                 var response = mvc.perform(get(USERS_URL)

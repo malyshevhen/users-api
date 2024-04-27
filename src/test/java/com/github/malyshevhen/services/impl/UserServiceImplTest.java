@@ -6,11 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,14 +25,16 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 
 import com.github.malyshevhen.exceptions.EntityAlreadyExistsException;
 import com.github.malyshevhen.exceptions.EntityNotFoundException;
 import com.github.malyshevhen.exceptions.UserValidationException;
+import com.github.malyshevhen.models.DateRange;
 import com.github.malyshevhen.models.User;
 import com.github.malyshevhen.repositories.UserRepository;
 
-import configs.UserConfiguration;
+import com.github.malyshevhen.configs.UserConstraints;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceImplTest {
@@ -39,7 +43,7 @@ public class UserServiceImplTest {
     private UserRepository userRepository;
 
     @Mock
-    private UserConfiguration userConfig;
+    private UserConstraints userConfig;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -84,12 +88,14 @@ public class UserServiceImplTest {
 
     @DisplayName("Test get all users returns page of users")
     @Test
+    @SuppressWarnings("unchecked")
     void testGetAll_ShouldReturnPageOfUsers() {
         var pageable = PageRequest.of(0, 10);
         var userPage = new PageImpl<>(List.of(user));
-        when(userRepository.findAll(pageable)).thenReturn(userPage);
+        var dateRange = new DateRange(LocalDate.of(1990, 1, 1), LocalDate.of(2000, 1, 1));
+        when(userRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(userPage);
 
-        var result = userService.getAll(pageable);
+        var result = userService.getAll(pageable, dateRange);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
@@ -187,6 +193,6 @@ public class UserServiceImplTest {
 
         assertThrows(EntityNotFoundException.class,
                 () -> userService.deleteById(user.getId()));
-        verify(userRepository, never()).delete(any());
+        verify(userRepository, never()).delete(any(User.class));
     }
 }

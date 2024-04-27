@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -23,20 +24,21 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import com.github.malyshevhen.configs.TestApplicationConfig;
 import com.github.malyshevhen.exceptions.EntityAlreadyExistsException;
 import com.github.malyshevhen.exceptions.EntityNotFoundException;
 import com.github.malyshevhen.exceptions.UserValidationException;
 import com.github.malyshevhen.models.Address;
+import com.github.malyshevhen.models.DateRange;
 import com.github.malyshevhen.models.User;
 import com.github.malyshevhen.repositories.UserRepository;
 import com.github.malyshevhen.services.UserService;
 
-import configs.UserConfiguration;
 import jakarta.transaction.Transactional;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@Import({ UserConfiguration.class })
+@Import({ TestApplicationConfig.class })
 @Testcontainers
 @Transactional
 @DirtiesContext
@@ -102,7 +104,8 @@ public class UserServiceIntegrationTest {
     public void testFindAll_whenDBIsEmpty_thenReturnEmptyList() {
         // Execute:
         var pageable = PageRequest.of(0, 10);
-        var users = userService.getAll(pageable);
+        var dateRange = new DateRange(LocalDate.of(1990, 1,1), LocalDate.of(2001, 1, 1));
+        var users = userService.getAll(pageable, dateRange);
 
         // Verify:
         assertEquals(0, users.getTotalElements());
@@ -120,7 +123,7 @@ public class UserServiceIntegrationTest {
         var pageable = PageRequest.of(0, 10);
 
         // Execute:
-        var users = userService.getAll(pageable);
+        var users = userService.getAll(pageable, null);
 
         // Verify:
         assertEquals(1, users.getTotalElements());

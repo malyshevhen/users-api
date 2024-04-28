@@ -34,4 +34,7 @@ public record DateRange(
         return to;
     }
 
+    public boolean isSet() {
+        return from != null || to != null;
+    }
 }

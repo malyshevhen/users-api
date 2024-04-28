@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public Page<User> getAll(Pageable pageable, DateRange dateRange) {
-        var spec = dateRange == null
+        var spec = dateRange == null || !dateRange.isSet()
                 ? Specification.<User>where(null)
                 : inRange(dateRange);
 

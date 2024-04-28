@@ -88,8 +88,7 @@ public class ApplicationExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<ErrorResponse> handleServerException(final Exception ex) {
-        var message = "Error: " + ex.getClass().getSimpleName() + " " + ex.getMessage();
-        ErrorResponse response = new ErrorResponse(message);
+        ErrorResponse response = new ErrorResponse(ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

@@ -10,6 +10,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -22,16 +24,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -48,319 +46,376 @@ import com.github.malyshevhen.models.User;
 import com.github.malyshevhen.models.mapper.UserMapper;
 import com.github.malyshevhen.models.mapper.UserMapperImpl;
 import com.github.malyshevhen.services.UserService;
-
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 
 @ActiveProfiles("test")
-@Import({ UserMapperImpl.class })
+@Import({UserMapperImpl.class})
 @WebMvcTest(UserController.class)
 class UserControllerTest {
 
-        private static final String USERS_URL = "/users";
+    private static final String USERS_URL = "/users";
 
-        @Autowired
-        private MockMvc mvc;
+    @Autowired
+    private MockMvc mvc;
 
-        @Autowired
-        private ObjectMapper objectMapper;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-        @Autowired
-        private UserMapper userMapper;
+    @Autowired
+    private UserMapper userMapper;
 
-        @MockBean
-        private UserService userService;
+    @MockBean
+    private UserService userService;
 
-        @DisplayName("register users should return 201 if required fields is valid")
-        @Test
-        @SneakyThrows
-        void registerUserCreated() {
-                // Given:
-                var registerForm = getValidUserRegistrationForm();
+    @Captor
+    private ArgumentCaptor<Pageable> pageableCaptor;
 
-                var savedUser = userMapper.toUser(registerForm);
-                savedUser.setId(1L);
-                savedUser.setCreatedAt(LocalDateTime.now());
+    @DisplayName("register users should return 201 if required fields is valid")
+    @Test
+    @SneakyThrows
+    void registerUserCreated() {
+        // Given:
+        var registerForm = getValidUserRegistrationForm();
 
-                when(userService.save(any(User.class))).thenReturn(savedUser);
+        var savedUser = userMapper.toUser(registerForm);
+        savedUser.setId(1L);
+        savedUser.setCreatedAt(LocalDateTime.now());
 
-                // Execute:
-                var response = mvc.perform(post(USERS_URL)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(registerForm)))
-                                .andReturn()
-                                .getResponse();
+        when(userService.save(any(User.class))).thenReturn(savedUser);
 
-                // Verify:
-                assertEquals(201, response.getStatus());
+        // Execute:
+        var response = mvc.perform(post(USERS_URL)
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .content(objectMapper.writeValueAsString(registerForm)))
+                           .andReturn()
+                           .getResponse();
 
-                // Execute:
-                var responseBody = response.getContentAsString();
-                var createdUser = objectMapper.readValue(responseBody, User.class);
+        // Verify:
+        assertEquals(201, response.getStatus());
 
-                // Verify:
-                assertNotNull(createdUser);
-                assertNotNull(createdUser.getId());
-                assertEquals(registerForm.getEmail(), createdUser.getEmail());
-                assertEquals(registerForm.getFirstName(), createdUser.getFirstName());
-                assertEquals(registerForm.getLastName(), createdUser.getLastName());
-                assertEquals(registerForm.getBirthDate(), createdUser.getBirthDate());
-        }
+        // Execute:
+        var responseBody = response.getContentAsString();
+        var createdUser = objectMapper.readValue(responseBody, User.class);
 
-        @DisplayName("register users should return 400 if form is invalid")
-        @ParameterizedTest(name = "{index}: register user with email: {0}, firstName: {1}, lastName: {2}")
-        @MethodSource
-        @SneakyThrows
-        void registerUserBadRequest(String email, String firstName, String lastName) {
-                // Given:
-                var registerForm = new UserRegistrationForm()
-                                .email(email)
-                                .firstName(firstName)
-                                .lastName(lastName)
-                                .birthDate(LocalDate.of(1990, 1, 1));
+        // Verify:
+        assertNotNull(createdUser);
+        assertNotNull(createdUser.getId());
+        assertEquals(registerForm.getEmail(), createdUser.getEmail());
+        assertEquals(registerForm.getFirstName(), createdUser.getFirstName());
+        assertEquals(registerForm.getLastName(), createdUser.getLastName());
+        assertEquals(registerForm.getBirthDate(), createdUser.getBirthDate());
+    }
 
-                // Execute:
-                var response = mvc.perform(post(USERS_URL)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(registerForm)))
-                                .andReturn()
-                                .getResponse();
+    @DisplayName("register users should return 400 if form is invalid")
+    @ParameterizedTest(name = "{index}: register user with email: {0}, firstName: {1}, lastName: {2}")
+    @MethodSource
+    @SneakyThrows
+    void registerUserBadRequest(String email, String firstName, String lastName) {
+        // Given:
+        var registerForm = new UserRegistrationForm()
+                               .email(email)
+                               .firstName(firstName)
+                               .lastName(lastName)
+                               .birthDate(LocalDate.of(1990, 1, 1));
 
-                // Verify:
-                assertEquals(400, response.getStatus());
+        // Execute:
+        var response = mvc.perform(post(USERS_URL)
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .content(objectMapper.writeValueAsString(registerForm)))
+                           .andReturn()
+                           .getResponse();
 
-                // Execute:
-                var responseBody = response.getContentAsString();
-                var errorResponse = objectMapper.readValue(responseBody, ErrorResponse.class);
+        // Verify:
+        assertEquals(400, response.getStatus());
 
-                // Verify:
-                assertNotNull(errorResponse);
-                assertTrue(errorResponse.message().contains("Validation failed"));
-        }
+        // Execute:
+        var responseBody = response.getContentAsString();
+        var errorResponse = objectMapper.readValue(responseBody, ErrorResponse.class);
 
-        private static Stream<Arguments> registerUserBadRequest() {
-                return Stream.of(
-                                // Invalid email:
-                                Arguments.of("@invalid.com", "John", "Doe", LocalDate.now().minusYears(20)),
-                                Arguments.of("invalid@email", "John", "Doe", LocalDate.now().minusYears(20)),
-                                Arguments.of("invalid.email.com", "John", "Doe", LocalDate.now().minusYears(20)),
-                                Arguments.of("", "John", "Doe", LocalDate.now().minusYears(20)),
-                                // Empty first name:
-                                Arguments.of("valid@email.com", "", "Doe", LocalDate.now().minusYears(20)),
-                                // Empty last name:
-                                Arguments.of("valid@email.com", "John", "", LocalDate.now().minusYears(20)));
-        }
+        // Verify:
+        assertNotNull(errorResponse);
+        assertTrue(errorResponse.message().contains("Validation failed"));
+    }
 
-        @DisplayName("get all users should return 200 and list of users")
-        @Test
-        @SneakyThrows
-        void getAllUsers() {
-                // Given:
-                var user1 = getValidUser();
-                var user2 = getValidUser();
+    private static Stream<Arguments> registerUserBadRequest() {
+        return Stream.of(
+            // Invalid email:
+            Arguments.of("@invalid.com", "John", "Doe", LocalDate.now().minusYears(20)),
+            Arguments.of("invalid@email", "John", "Doe", LocalDate.now().minusYears(20)),
+            Arguments.of("invalid.email.com", "John", "Doe", LocalDate.now().minusYears(20)),
+            Arguments.of("", "John", "Doe", LocalDate.now().minusYears(20)),
+            // Empty first name:
+            Arguments.of("valid@email.com", "", "Doe", LocalDate.now().minusYears(20)),
+            // Empty last name:
+            Arguments.of("valid@email.com", "John", "", LocalDate.now().minusYears(20)));
+    }
 
-                var userPage = new PageImpl<>(List.of(user1, user2));
+    @DisplayName("get all users should return 200 and list of users")
+    @Test
+    @SneakyThrows
+    void getAllUsers() {
+        // Given:
+        var user1 = getValidUser();
+        var user2 = getValidUser();
 
-                when(userService.getAll(any(Pageable.class), any(DateRange.class))).thenReturn(userPage);
+        var userPage = new PageImpl<>(List.of(user1, user2));
 
-                // Execute:
-                var response = mvc.perform(get(USERS_URL)
-                                .contentType(MediaType.APPLICATION_JSON))
-                                .andReturn()
-                                .getResponse();
+        when(userService.getAll(any(Pageable.class), any(DateRange.class))).thenReturn(userPage);
 
-                // Verify:
-                assertEquals(200, response.getStatus());
+        // Execute:
+        var response = mvc.perform(get(USERS_URL)
+                                       .contentType(MediaType.APPLICATION_JSON))
+                           .andReturn()
+                           .getResponse();
 
-                // Execute:
-                var responseBody = response.getContentAsString();
+        // Verify:
+        assertEquals(200, response.getStatus());
 
-                // Verify:
-                assertNotNull(responseBody);
-        }
+        // Execute:
+        var responseBody = response.getContentAsString();
 
-        @DisplayName("get user by id should return 200 and user info")
-        @Test
-        @SneakyThrows
-        void getUserById() {
-                // Given:
-                var user = getValidUser();
+        // Verify:
+        assertNotNull(responseBody);
+    }
 
-                when(userService.getById(1L)).thenReturn(user);
+    @DisplayName("get all users should return 400 if date range is invalid")
+    @ParameterizedTest(name = "{index}: get all users in date range: {0}")
+    @ValueSource(strings = {"?from=2020-01-01&to=1990-10-10", "?from=0000-00-00&to=0000-00-00", "?from=0&to=10",
+        "?from=INVALID&to=INVALID"})
+    @SneakyThrows
+    void getAllUsers_BadRequest(String dateRange) {
+        // Execute:
+        var response = mvc.perform(get(USERS_URL + dateRange)
+                                       .contentType(MediaType.APPLICATION_JSON))
+                           .andReturn()
+                           .getResponse();
 
-                // Execute:
-                var response = mvc.perform(get(USERS_URL + "/1")
-                                .contentType(MediaType.APPLICATION_JSON))
-                                .andReturn()
-                                .getResponse();
+        assertEquals(400, response.getStatus());
 
-                // Verify:
-                assertEquals(200, response.getStatus());
+    }
 
-                // Execute:
-                var responseBody = response.getContentAsString();
-                var userInfo = objectMapper.readValue(responseBody, UserInfo.class);
+    @DisplayName("Get all with invalid pagination should use default pagination")
+    @ParameterizedTest(name = "{index}: Get All with pagination: {0}")
+    @ValueSource(strings = {"?size=INVALID&page=INVALID", "?page=-10&size=INVALID", "?page=INVALID&size=-10",
+        "?page=-100&size=-20"})
+    @SneakyThrows
+    void getAllUsers_withInvalidPagination_useDefaultPagination(String pagination) {
+        // Prepare:
+        var user1 = getValidUser();
+        var user2 = getValidUser();
 
-                // Verify:
-                assertNotNull(userInfo);
-                assertEquals(user.getId(), userInfo.getId());
-                assertEquals(user.getEmail(), userInfo.getEmail());
-                assertEquals(user.getFirstName(), userInfo.getFirstName());
-                assertEquals(user.getLastName(), userInfo.getLastName());
-                assertEquals(user.getBirthDate(), userInfo.getBirthDate());
-        }
+        var userPage = new PageImpl<>(List.of(user1, user2));
 
-        @DisplayName("update user by id should return 200 and updated user info")
-        @Test
-        @SneakyThrows
-        void updateUserById() {
-                // Given:
-                var updateForm = getValidUserUpdateForm();
+        var defaultPageable = PageRequest.of(0, 20);
 
-                var updatedUser = userMapper.toUser(updateForm);
-                updatedUser.setId(1L);
+        when(userService.getAll(eq(defaultPageable), any(DateRange.class))).thenReturn(userPage);
 
-                when(userService.updateById(anyLong(), any(User.class))).thenReturn(updatedUser);
+        // Execute:
+        var response = mvc.perform(get(USERS_URL + pagination)
+                                       .contentType(MediaType.APPLICATION_JSON))
+                           .andReturn()
+                           .getResponse();
 
-                // Execute:
-                var response = mvc.perform(put(USERS_URL + "/1")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(updateForm)))
-                                .andReturn()
-                                .getResponse();
+        assertEquals(200, response.getStatus());
 
-                // Verify:
-                assertEquals(200, response.getStatus());
+        verify(userService).getAll(pageableCaptor.capture(), any());
+        var pageable = pageableCaptor.getValue();
 
-                var responseBody = response.getContentAsString();
-                var userInfo = objectMapper.readValue(responseBody, UserInfo.class);
+        assertEquals(20, pageable.getPageSize());
+        assertEquals(0, pageable.getPageNumber());
+    }
 
-                assertNotNull(userInfo);
-                assertEquals(updatedUser.getId(), userInfo.getId());
-                assertEquals(updatedUser.getEmail(), userInfo.getEmail());
-                assertEquals(updatedUser.getFirstName(), userInfo.getFirstName());
-                assertEquals(updatedUser.getLastName(), userInfo.getLastName());
-                assertEquals(updatedUser.getBirthDate(), userInfo.getBirthDate());
-        }
+    @DisplayName("get user by id should return 200 and user info")
+    @Test
+    @SneakyThrows
+    void getUserById() {
+        // Given:
+        var user = getValidUser();
 
-        @DisplayName("delete user by id should return 204")
-        @Test
-        @SneakyThrows
-        void deleteUserById() {
-                // Execute:
-                var response = mvc.perform(delete(USERS_URL + "/1"))
-                                .andReturn()
-                                .getResponse();
+        when(userService.getById(1L)).thenReturn(user);
 
-                // Verify:
-                assertEquals(204, response.getStatus());
-        }
+        // Execute:
+        var response = mvc.perform(get(USERS_URL + "/1")
+                                       .contentType(MediaType.APPLICATION_JSON))
+                           .andReturn()
+                           .getResponse();
 
-        @DisplayName("update user email should return 200 and updated user info")
-        @Test
-        @SneakyThrows
-        void updateUserEmail() {
-                // Given:
-                var id = 1L;
-                var email = getValidEmail();
-                var updateEmailForm = new UpdateEmailForm().email(email);
+        // Verify:
+        assertEquals(200, response.getStatus());
 
-                var updatedUser = getValidUser();
-                updatedUser.setEmail(email);
+        // Execute:
+        var responseBody = response.getContentAsString();
+        var userInfo = objectMapper.readValue(responseBody, UserInfo.class);
 
-                when(userService.updateEmail(id, email)).thenReturn(updatedUser);
+        // Verify:
+        assertNotNull(userInfo);
+        assertEquals(user.getId(), userInfo.getId());
+        assertEquals(user.getEmail(), userInfo.getEmail());
+        assertEquals(user.getFirstName(), userInfo.getFirstName());
+        assertEquals(user.getLastName(), userInfo.getLastName());
+        assertEquals(user.getBirthDate(), userInfo.getBirthDate());
+    }
 
-                // Execute:
-                var response = mvc.perform(patch(USERS_URL + "/{id}/email", id)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(updateEmailForm)))
-                                .andReturn()
-                                .getResponse();
+    @DisplayName("update user by id should return 200 and updated user info")
+    @Test
+    @SneakyThrows
+    void updateUserById() {
+        // Given:
+        var updateForm = getValidUserUpdateForm();
 
-                // Verify:
-                assertEquals(200, response.getStatus());
+        var updatedUser = userMapper.toUser(updateForm);
+        updatedUser.setId(1L);
 
-                var responseBody = response.getContentAsString();
-                var userInfo = objectMapper.readValue(responseBody, UserInfo.class);
+        when(userService.updateById(anyLong(), any(User.class))).thenReturn(updatedUser);
 
-                assertNotNull(userInfo);
-                assertEquals(updatedUser.getId(), userInfo.getId());
-                assertEquals(updatedUser.getEmail(), userInfo.getEmail());
-                assertEquals(updatedUser.getFirstName(), userInfo.getFirstName());
-                assertEquals(updatedUser.getLastName(), userInfo.getLastName());
-                assertEquals(updatedUser.getBirthDate(), userInfo.getBirthDate());
-        }
+        // Execute:
+        var response = mvc.perform(put(USERS_URL + "/1")
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .content(objectMapper.writeValueAsString(updateForm)))
+                           .andReturn()
+                           .getResponse();
 
-        @DisplayName("update user email should return 400 if email is invalid")
-        @ParameterizedTest(name = "{index}: update user email with invalid email {0}")
-        @MethodSource
-        @SneakyThrows
-        void updateUserEmailBadRequest(String email) {
-                // Given:
-                var id = 1L;
-                var updateEmailForm = new UpdateEmailForm().email(email);
+        // Verify:
+        assertEquals(200, response.getStatus());
 
-                // Execute:
-                var response = mvc.perform(patch(USERS_URL + "/{id}/email", id)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(updateEmailForm)))
-                                .andReturn()
-                                .getResponse();
+        var responseBody = response.getContentAsString();
+        var userInfo = objectMapper.readValue(responseBody, UserInfo.class);
 
-                // Verify:
-                assertEquals(400, response.getStatus());
+        assertNotNull(userInfo);
+        assertEquals(updatedUser.getId(), userInfo.getId());
+        assertEquals(updatedUser.getEmail(), userInfo.getEmail());
+        assertEquals(updatedUser.getFirstName(), userInfo.getFirstName());
+        assertEquals(updatedUser.getLastName(), userInfo.getLastName());
+        assertEquals(updatedUser.getBirthDate(), userInfo.getBirthDate());
+    }
 
-                // Execute:
-                var responseBody = response.getContentAsString();
-                var errorResponse = objectMapper.readValue(responseBody, ErrorResponse.class);
+    @DisplayName("delete user by id should return 204")
+    @Test
+    @SneakyThrows
+    void deleteUserById() {
+        // Execute:
+        var response = mvc.perform(delete(USERS_URL + "/1"))
+                           .andReturn()
+                           .getResponse();
 
-                // Verify:
-                assertNotNull(errorResponse);
-                assertTrue(errorResponse.message().contains("Validation failed"));
-        }
+        // Verify:
+        assertEquals(204, response.getStatus());
+    }
 
-        private static Stream<Arguments> updateUserEmailBadRequest() {
-                return Stream.of(
-                                Arguments.of("@invalid.com"),
-                                Arguments.of("invalid@email"),
-                                Arguments.of("invalid.email.com"),
-                                Arguments.of(""));
-        }
+    @DisplayName("update user email should return 200 and updated user info")
+    @Test
+    @SneakyThrows
+    void updateUserEmail() {
+        // Given:
+        var id = 1L;
+        var email = getValidEmail();
+        var updateEmailForm = new UpdateEmailForm().email(email);
 
-        @DisplayName("update user address should return 200 and updated user info")
-        @Test
-        @SneakyThrows
-        void updateUserAddress() {
-                // Given:
-                var id = 1L;
-                var address = getValidAddress();
+        var updatedUser = getValidUser();
+        updatedUser.setEmail(email);
 
-                var updatedUser = getValidUser();
-                updatedUser.setAddress(address);
+        when(userService.updateEmail(id, email)).thenReturn(updatedUser);
 
-                when(userService.updateAddress(anyLong(), any(Address.class))).thenReturn(updatedUser);
+        // Execute:
+        var response = mvc.perform(patch(USERS_URL + "/{id}/email", id)
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .content(objectMapper.writeValueAsString(updateEmailForm)))
+                           .andReturn()
+                           .getResponse();
 
-                // Execute:
-                var response = mvc.perform(patch(USERS_URL + "/{id}/address", id)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(address)))
-                                .andReturn()
-                                .getResponse();
+        // Verify:
+        assertEquals(200, response.getStatus());
 
-                // Verify:
-                assertEquals(200, response.getStatus());
+        var responseBody = response.getContentAsString();
+        var userInfo = objectMapper.readValue(responseBody, UserInfo.class);
 
-                var responseBody = response.getContentAsString();
-                var userInfo = objectMapper.readValue(responseBody, UserInfo.class);
+        assertNotNull(userInfo);
+        assertEquals(updatedUser.getId(), userInfo.getId());
+        assertEquals(updatedUser.getEmail(), userInfo.getEmail());
+        assertEquals(updatedUser.getFirstName(), userInfo.getFirstName());
+        assertEquals(updatedUser.getLastName(), userInfo.getLastName());
+        assertEquals(updatedUser.getBirthDate(), userInfo.getBirthDate());
+    }
 
-                assertNotNull(userInfo);
-                assertEquals(updatedUser.getId(), userInfo.getId());
-                assertEquals(updatedUser.getEmail(), userInfo.getEmail());
-                assertEquals(updatedUser.getFirstName(), userInfo.getFirstName());
-                assertEquals(updatedUser.getLastName(), userInfo.getLastName());
-                assertEquals(updatedUser.getBirthDate(), userInfo.getBirthDate());
-                assertEquals(address.getStreet(), userInfo.getAddress().getStreet());
-                assertEquals(address.getCity(), userInfo.getAddress().getCity());
-                assertEquals(address.getCountry(), userInfo.getAddress().getCountry());
-                assertEquals(address.getNumber(), userInfo.getAddress().getNumber());
-        }
+    @DisplayName("update user email should return 400 if email is invalid")
+    @ParameterizedTest(name = "{index}: update user email with invalid email {0}")
+    @MethodSource
+    @SneakyThrows
+    void updateUserEmailBadRequest(String email) {
+        // Given:
+        var id = 1L;
+        var updateEmailForm = new UpdateEmailForm().email(email);
+
+        // Execute:
+        var response = mvc.perform(patch(USERS_URL + "/{id}/email", id)
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .content(objectMapper.writeValueAsString(updateEmailForm)))
+                           .andReturn()
+                           .getResponse();
+
+        // Verify:
+        assertEquals(400, response.getStatus());
+
+        // Execute:
+        var responseBody = response.getContentAsString();
+        var errorResponse = objectMapper.readValue(responseBody, ErrorResponse.class);
+
+        // Verify:
+        assertNotNull(errorResponse);
+        assertTrue(errorResponse.message().contains("Validation failed"));
+    }
+
+    private static Stream<Arguments> updateUserEmailBadRequest() {
+        return Stream.of(
+            Arguments.of("@invalid.com"),
+            Arguments.of("invalid@email"),
+            Arguments.of("invalid.email.com"),
+            Arguments.of(""));
+    }
+
+    @DisplayName("update user address should return 200 and updated user info")
+    @Test
+    @SneakyThrows
+    void updateUserAddress() {
+        // Given:
+        var id = 1L;
+        var address = getValidAddress();
+
+        var updatedUser = getValidUser();
+        updatedUser.setAddress(address);
+
+        when(userService.updateAddress(anyLong(), any(Address.class))).thenReturn(updatedUser);
+
+        // Execute:
+        var response = mvc.perform(patch(USERS_URL + "/{id}/address", id)
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .content(objectMapper.writeValueAsString(address)))
+                           .andReturn()
+                           .getResponse();
+
+        // Verify:
+        assertEquals(200, response.getStatus());
+
+        var responseBody = response.getContentAsString();
+        var userInfo = objectMapper.readValue(responseBody, UserInfo.class);
+
+        assertNotNull(userInfo);
+        assertEquals(updatedUser.getId(), userInfo.getId());
+        assertEquals(updatedUser.getEmail(), userInfo.getEmail());
+        assertEquals(updatedUser.getFirstName(), userInfo.getFirstName());
+        assertEquals(updatedUser.getLastName(), userInfo.getLastName());
+        assertEquals(updatedUser.getBirthDate(), userInfo.getBirthDate());
+        assertEquals(address.getStreet(), userInfo.getAddress().getStreet());
+        assertEquals(address.getCity(), userInfo.getAddress().getCity());
+        assertEquals(address.getCountry(), userInfo.getAddress().getCountry());
+        assertEquals(address.getNumber(), userInfo.getAddress().getNumber());
+    }
 }

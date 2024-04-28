@@ -15,7 +15,6 @@ import com.github.malyshevhen.models.Address;
 import com.github.malyshevhen.models.DateRange;
 import com.github.malyshevhen.models.mapper.UserMapper;
 import com.github.malyshevhen.services.UserService;
-
 import lombok.RequiredArgsConstructor;
 
 /**

@@ -1,14 +1,16 @@
 package com.github.malyshevhen.models.mapper;
 
+import static com.github.malyshevhen.testutils.FakeData.getValidUser;
+import static com.github.malyshevhen.testutils.FakeData.getValidUserRegistrationForm;
+import static com.github.malyshevhen.testutils.FakeData.getValidUserUpdateForm;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static com.github.malyshevhen.testutils.FakeData.*;
-
-import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import com.github.malyshevhen.dto.UserInfo;
 import com.github.malyshevhen.models.User;
+import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 
 class UserMapperTest {
 
@@ -28,9 +30,9 @@ class UserMapperTest {
         assertEquals(registrationForm.getAddress(), user.getAddress());
         assertEquals(registrationForm.getPhone(), user.getPhone());
 
-        assertEquals(null, user.getId());
-        assertEquals(null, user.getCreatedAt());
-        assertEquals(null, user.getUpdatedAt());
+        assertNull(user.getId());
+        assertNull(user.getCreatedAt());
+        assertNull(user.getUpdatedAt());
     }
 
     @Test
@@ -47,9 +49,9 @@ class UserMapperTest {
         assertEquals(updateForm.getAddress(), user.getAddress());
         assertEquals(updateForm.getPhone(), user.getPhone());
 
-        assertEquals(null, user.getId());
-        assertEquals(null, user.getCreatedAt());
-        assertEquals(null, user.getUpdatedAt());
+        assertNull(user.getId());
+        assertNull(user.getCreatedAt());
+        assertNull(user.getUpdatedAt());
     }
 
     @Test

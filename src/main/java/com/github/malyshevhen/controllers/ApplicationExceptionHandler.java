@@ -3,6 +3,9 @@ package com.github.malyshevhen.controllers;
 import com.github.malyshevhen.exceptions.BaseApplicationException;
 import com.github.malyshevhen.exceptions.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
+
+import org.springframework.beans.BeanInstantiationException;
+import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +36,7 @@ public class ApplicationExceptionHandler {
      *
      * @param ex The {@link BaseApplicationException} to handle.
      * @return A `ResponseEntity` containing an `ErrorResponse` with the exception
-     *         message and the HTTP status code specified in the exception.
+     * message and the HTTP status code specified in the exception.
      */
     @ExceptionHandler(BaseApplicationException.class)
     public ResponseEntity<ErrorResponse> handleCustomException(final BaseApplicationException ex) {
@@ -57,16 +60,17 @@ public class ApplicationExceptionHandler {
      *
      * @param ex The exception to handle.
      * @return A ResponseEntity containing an ErrorResponse with the exception
-     *         message and a 400 Bad Request status.
+     * message and a 400 Bad Request status.
      */
     @ExceptionHandler({
-            ConstraintViolationException.class,
-            IllegalArgumentException.class,
-            MissingServletRequestParameterException.class,
-            MethodArgumentTypeMismatchException.class,
-            MethodArgumentNotValidException.class,
-            HttpMessageNotReadableException.class,
-            PropertyReferenceException.class })
+        BeanInstantiationException.class,
+        ConstraintViolationException.class,
+        IllegalArgumentException.class,
+        MissingServletRequestParameterException.class,
+        MethodArgumentTypeMismatchException.class,
+        MethodArgumentNotValidException.class,
+        HttpMessageNotReadableException.class,
+        PropertyReferenceException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorResponse> handleBadRequest(final Exception ex) {
         ErrorResponse response = new ErrorResponse(ex.getMessage());
@@ -79,12 +83,13 @@ public class ApplicationExceptionHandler {
      *
      * @param ex The server exception to handle.
      * @return A ResponseEntity containing an error response
-     *         with the exception message and timestamp.
+     * with the exception message and timestamp.
      */
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<ErrorResponse> handleServerException(final Exception ex) {
-        ErrorResponse response = new ErrorResponse(ex.getMessage());
+        var message = "Error: " + ex.getClass().getSimpleName() + " " + ex.getMessage();
+        ErrorResponse response = new ErrorResponse(message);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

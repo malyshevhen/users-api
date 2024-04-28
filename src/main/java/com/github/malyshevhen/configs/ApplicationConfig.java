@@ -43,11 +43,11 @@ public class ApplicationConfig {
 
     @Bean
     DataSource getDataSource() {
-        var dataSourceBuilder = DataSourceBuilder.create();
-        dataSourceBuilder.url(dbURL);
-        dataSourceBuilder.username(dbUsername);
-        dataSourceBuilder.password(dbPassword);
-        return dataSourceBuilder.build();
+        return DataSourceBuilder.create()
+                .url(dbURL)
+                .username(dbUsername)
+                .password(dbPassword)
+                .build();
     }
 
 }

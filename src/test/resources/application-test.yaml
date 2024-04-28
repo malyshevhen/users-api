@@ -6,6 +6,11 @@ spring:
     web:
       pageable:
         default-page-size: 20
+# Datasource configuration
+  datasource:
+    url: "jdbc:tc:postgresql:16-alpine:///test_db"
+    username: "postgres"
+    password: "postgres"
 # Show queryes to DB for testing poprouses
   jpa:
     show-sql: true

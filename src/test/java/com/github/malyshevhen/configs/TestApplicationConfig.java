@@ -11,8 +11,10 @@ import org.springframework.context.annotation.Profile;
 import lombok.Setter;
 
 /**
- * This class configures a Spring test application context with a user constraint bean.
- * The user constraint bean returns the minimum required age, which is loaded from the
+ * This class configures a Spring test application context with a user
+ * constraint bean.
+ * The user constraint bean returns the minimum required age, which is loaded
+ * from the
  * `user.min-age` property.
  * <p/>
  * This configuration is only active when the "test" profile is enabled.
@@ -25,6 +27,15 @@ public class TestApplicationConfig {
     @Value("${user.min-age}")
     private int requiredAge;
 
+    @Value("${spring.datasource.url}")
+    private String dbURL;
+
+    @Value("${spring.datasource.username}")
+    private String dbUsername;
+
+    @Value("${spring.datasource.password}")
+    private String dbPassword;
+
     @Bean
     UserConstraints userConstraints() {
         return () -> requiredAge;
@@ -32,18 +43,13 @@ public class TestApplicationConfig {
 
     /**
      * Provides a test-specific DataSource for the application.
-     * <p/>
-     * This DataSource is configured to use a PostgreSQL database provided by the
-     * Testcontainers library.
-     * <p/>
-     * The database connection details are hardcoded for the test environment.
      */
     @Bean
     DataSource getDataSource() {
-        var dataSourceBuilder = DataSourceBuilder.create();
-        dataSourceBuilder.url("jdbc:tc:postgresql:16-alpine:///test_db");
-        dataSourceBuilder.username("testuser");
-        dataSourceBuilder.password("testpass");
-        return dataSourceBuilder.build();
+        return DataSourceBuilder.create()
+                .url(dbURL)
+                .username(dbUsername)
+                .password(dbPassword)
+                .build();
     }
 }

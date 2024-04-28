@@ -1,40 +1,5 @@
 package com.github.malyshevhen.controllers;
 
-import static com.github.malyshevhen.testutils.FakeData.getValidAddress;
-import static com.github.malyshevhen.testutils.FakeData.getValidEmail;
-import static com.github.malyshevhen.testutils.FakeData.getValidUser;
-import static com.github.malyshevhen.testutils.FakeData.getValidUserRegistrationForm;
-import static com.github.malyshevhen.testutils.FakeData.getValidUserUpdateForm;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Stream;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.malyshevhen.dto.UpdateEmailForm;
 import com.github.malyshevhen.dto.UserInfo;
@@ -55,6 +20,28 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Stream;
+
+import static com.github.malyshevhen.testutils.FakeData.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @ActiveProfiles("test")
 @Import({UserMapperImpl.class})
@@ -418,4 +405,22 @@ class UserControllerTest {
         assertEquals(address.getCountry(), userInfo.getAddress().getCountry());
         assertEquals(address.getNumber(), userInfo.getAddress().getNumber());
     }
+
+    @DisplayName("delete user address should return 204")
+    @Test
+    @SneakyThrows
+    void deleteUserAddress() {
+        // Given:
+        var id = 1L;
+
+        // Execute:
+        var response = mvc.perform(delete(USERS_URL + "/{id}/address", id)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andReturn()
+                .getResponse();
+
+        // Verify:
+        assertEquals(204, response.getStatus());
+    }
+
 }

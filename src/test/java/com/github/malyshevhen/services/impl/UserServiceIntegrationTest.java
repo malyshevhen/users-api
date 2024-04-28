@@ -113,9 +113,7 @@ public class UserServiceIntegrationTest {
 
         // Verify:
         assertEquals(0, users.getTotalElements());
-        assertNotNull(users.getContent());
-        assertNotNull(users.getSize());
-        assertNotNull(users.getNumber());
+        assertTrue(users.isEmpty());
     }
 
     @DisplayName("Get all with non empty DB should return page of users")
@@ -132,9 +130,9 @@ public class UserServiceIntegrationTest {
         // Verify:
         assertEquals(1, users.getTotalElements());
         assertNotNull(users.getContent());
-        assertNotNull(users.getSize());
-        assertNotNull(users.getNumber());
-        assertEquals(savedUser, users.getContent().get(0));
+        assertFalse(users.isEmpty());
+        assertTrue(users.getSize() > 0);
+        assertEquals(savedUser, users.getContent().getFirst());
     }
 
     @DisplayName("Get all with unsetted date range should return all users")
@@ -385,6 +383,30 @@ public class UserServiceIntegrationTest {
         var updatedUserOptional = userRepository.findById(savedUser.getId());
         var updatedUser = updatedUserOptional.get();
         assertEquals(newAddress, updatedUser.getAddress());
+    }
+
+    @DisplayName("Delete an address of existing user should delete address from DB")
+    @Test
+    public void testDeleteAddress_whenIdIsValid_thenDeleteAddress() {
+        // Prepare:
+        var validUser = getValidUser();
+        var savedUser = userService.save(validUser);
+
+        // Execute:
+        userService.deleteUsersAddress(savedUser.getId());
+
+        // Verify:
+        assertTrue(userRepository.findById(savedUser.getId()).map(User::getAddress).isEmpty());
+    }
+
+    @DisplayName("Delete an address of not existing user should throw an exception")
+    @Test
+    public void testDeleteAddress_whenIdIsInvalid_thenThrowAnException() {
+        // Verify:
+        var exception = assertThrows(EntityNotFoundException.class,
+                () -> userService.deleteUsersAddress(Long.MAX_VALUE));
+
+        assertEquals("User with id " + Long.MAX_VALUE + " was not found", exception.getMessage());
     }
 
 }

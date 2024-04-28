@@ -1,3 +1,7 @@
+server:
+  servlet:
+    contextPath: /api
+
 spring:
   application:
     name: users-api

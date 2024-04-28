@@ -107,7 +107,7 @@ class UserControllerTest {
         }
 
         @DisplayName("register users should return 400 if form is invalid")
-        @ParameterizedTest
+        @ParameterizedTest(name = "{index}: register user with email: {0}, firstName: {1}, lastName: {2}")
         @MethodSource
         @SneakyThrows
         void registerUserBadRequest(String email, String firstName, String lastName) {
@@ -291,7 +291,7 @@ class UserControllerTest {
         }
 
         @DisplayName("update user email should return 400 if email is invalid")
-        @ParameterizedTest
+        @ParameterizedTest(name = "{index}: update user email with invalid email {0}")
         @MethodSource
         @SneakyThrows
         void updateUserEmailBadRequest(String email) {

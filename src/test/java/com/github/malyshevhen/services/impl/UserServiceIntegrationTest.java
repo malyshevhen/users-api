@@ -11,10 +11,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -132,6 +135,31 @@ public class UserServiceIntegrationTest {
         assertNotNull(users.getSize());
         assertNotNull(users.getNumber());
         assertEquals(savedUser, users.getContent().get(0));
+    }
+
+    @DisplayName("Get all with unsetted date range should return all users")
+    @ParameterizedTest(name = "{index}: get all in date range: {0}")
+    @MethodSource
+    public void testFindAll_whenRangeIsNotSet_shouldReturnAll(DateRange dateRange) {
+        // Prepare:
+        var validUser = getValidUser();
+        var savedUser = userService.save(validUser);
+        var pageable = PageRequest.of(0, 10);
+
+        // Execute:
+        var page = userService.getAll(pageable, dateRange);
+
+        // Verify:
+        assertEquals(1, page.getTotalElements());
+        assertFalse(page.getContent().isEmpty());
+        assertEquals(savedUser, page.getContent().getFirst());
+    }
+
+    private static Stream<Arguments> testFindAll_whenRangeIsNotSet_shouldReturnAll() {
+        return Stream.of(
+            Arguments.of((Object) null),
+            Arguments.of(new DateRange(null, null))
+        );
     }
 
     @DisplayName("Get all with valid range should return page of users with birth date in this range")

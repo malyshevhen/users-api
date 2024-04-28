@@ -161,4 +161,10 @@ public class UserController implements UsersApi {
         userService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @Override
+    public ResponseEntity<Void> deleteUserAddress(Long id) {
+        userService.deleteUsersAddress(id);
+        return ResponseEntity.noContent().build();
+    }
 }

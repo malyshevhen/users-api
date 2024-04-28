@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import com.github.malyshevhen.models.DateRange;
 import com.github.malyshevhen.configs.UserConstraints;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -36,7 +37,7 @@ import lombok.RequiredArgsConstructor;
  * user's age is legal and the email is not already taken, before performing the
  * requested operations.
  * Also operations are performed in a transactional way.
- * 
+ *
  * @author Evhen Malysh
  */
 @Service
@@ -78,11 +79,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public Page<User> getAll(Pageable pageable, DateRange dateRange) {
-        var spec = dateRange == null || !dateRange.isSet()
-                ? Specification.<User>where(null)
-                : inRange(dateRange);
-
-        return userRepository.findAll(spec, pageable);
+        return userRepository.findAll(inRange(dateRange), pageable);
     }
 
     /**
@@ -178,6 +175,19 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
+     * Deletes the users address by the specified user ID.
+     *
+     * @param id the ID of the user
+     * @throws EntityNotFoundException if no user is found with the specified ID
+     */
+    @Transactional
+    @Override
+    public void deleteUsersAddress(Long id) {
+        var existingUser = getById(id);
+        existingUser.setAddress(null);
+    }
+
+    /**
      * Deletes the user with the specified ID.
      *
      * @param id the ID of the user to delete
@@ -192,7 +202,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Checks if the provided email is already taken in the database.
-     * 
+     *
      * @param email the email to check for existence
      * @throws EntityAlreadyExistsException if the email is already taken
      */
@@ -205,7 +215,7 @@ public class UserServiceImpl implements UserService {
     /**
      * Checks if the provided age is legal, i.e., greater than or equal to the
      * required minimum age.
-     * 
+     *
      * @param user the user whose age should be checked
      * @throws UserValidationException if the user's age is below the required
      *                                 age
@@ -220,9 +230,17 @@ public class UserServiceImpl implements UserService {
     }
 
     private Specification<User> inRange(DateRange dateRange) {
+        if (dateRange == null || !dateRange.isSet()) return Specification.where(null);
+
         return (root, query, criteriaBuilder) -> {
             query.distinct(true);
             var birthDate = root.get("birthDate").as(LocalDate.class);
+
+            if ((dateRange.getFrom() == null)) {
+                return criteriaBuilder.lessThanOrEqualTo(birthDate, dateRange.getTo());
+            } else if (dateRange.getTo() == null) {
+                return criteriaBuilder.greaterThanOrEqualTo(birthDate, dateRange.getFrom());
+            }
             return criteriaBuilder.between(birthDate, dateRange.from(), dateRange.to());
         };
     }

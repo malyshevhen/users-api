@@ -230,6 +230,31 @@ paths:
           $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/InternalServerError"
+    delete:
+      tags:
+        - Users
+      operationId: deleteUserAddress
+      summary: Delete a specific users address.
+      description: This endpoint allows you to delete a specific users address.
+      parameters:
+        - name: id
+          in: path
+          description: Users ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        "204":
+          description: No Content. Users address successfully deleted.
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
 
 components:
   schemas:

@@ -28,7 +28,7 @@ public interface UserService {
      * @param userToRegister the user to be registered
      * @return the saved user
      *
-     * @throws {@link EntityAlreadyExistsException} if email provided by the
+     * @throws EntityAlreadyExistsException if email provided by the
      *                registration form is already taken.
      */
     User save(@Valid User userToRegister) throws EntityAlreadyExistsException;
@@ -37,7 +37,7 @@ public interface UserService {
      * Retrieve page of users based on given pageable.
      *
      * @param pageable  the pagination details
-     * @param dateRange
+     * @param dateRange date filtering details
      * @return a {@link Page} object containing the list of users
      * and page details
      */
@@ -49,7 +49,7 @@ public interface UserService {
      * @param id The identifier
      * @return The {@link User} by identifier.
      *
-     * @throws {@link EntityNotFoundException} if the user for retrieve is not found
+     * @throws EntityNotFoundException if the user for retrieve is not found
      *                in DB
      */
     User getById(@NotNull Long id) throws EntityNotFoundException;
@@ -61,8 +61,8 @@ public interface UserService {
      * @param user The parameters for users update
      * @return Updated {@link User}
      *
-     * @throws {@link EntityAlreadyExistsException} if the email to update is
-     * @throws {@link EntityNotFoundException} if the user to update is not found in
+     * @throws EntityAlreadyExistsException if the email to update is
+     * @throws EntityNotFoundException if the user to update is not found in
      *                DB.
      */
     User updateById(@NotNull Long id, @Valid User user)
@@ -73,7 +73,7 @@ public interface UserService {
      *
      * @param id The identifier
      *
-     * @throws {@link EntityNotFoundException} if the user is not found
+     * @throws EntityNotFoundException if the user is not found
      */
     void deleteById(@NotNull Long id) throws EntityNotFoundException;
 
@@ -84,9 +84,9 @@ public interface UserService {
      * @param email The email
      * @return Updated {@link User}
      *
-     * @throws {@link EntityAlreadyExistsException} if the email to update is
+     * @throws  EntityAlreadyExistsException if the email to update is
      *                already taken.
-     * @throws {@link EntityNotFoundException} if the user for update is not
+     * @throws  EntityNotFoundException if the user for update is not
      *                found ib DB.
      */
     User updateEmail(Long id, String email) throws EntityNotFoundException, EntityAlreadyExistsException;
@@ -98,9 +98,16 @@ public interface UserService {
      * @param address The address
      * @return Updated {@link User}
      *
-     * @throws {@link EntityNotFoundException} if the user for update is not found
+     * @throws EntityNotFoundException if the user for update is not found
      *                in DB.
      */
     User updateAddress(Long id, Address address) throws EntityNotFoundException;
 
+    /**
+     * Delete users address
+     *
+     * @param id The identifier if a user
+     * @throws EntityNotFoundException if the user was not found.
+     */
+    void deleteUsersAddress(Long id) throws EntityNotFoundException;
 }

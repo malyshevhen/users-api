@@ -254,7 +254,40 @@ paths:
           $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/InternalServerError"
-
+  /users/{id}/phone:
+    patch:
+      tags:
+        - Users
+      operationId: updateUserPhone
+      summary: Update a specific users phone number.
+      description: This endpoint allows you to update a specific users phone number.
+      parameters:
+        - name: id
+          in: path
+          description: Users ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Phone"
+      responses:
+        "200":
+          description: OK. User successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserInfo"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
 components:
   schemas:
@@ -420,6 +453,16 @@ components:
           minLength: 1
           maxLength: 256
           example: 1-A
+    Phone:
+      description: Object that contains phone number.
+      type: object
+      properties:
+        phone:
+          type: string
+          minLength: 1
+          maxLength: 256
+          example: 911
+
     UsersPage:
       description: Object representing a page of users.
       type: object

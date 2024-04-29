@@ -1,6 +1,7 @@
 package com.github.malyshevhen.services;
 
 import com.github.malyshevhen.domain.dto.DateRange;
+import com.github.malyshevhen.dto.Phone;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
@@ -110,4 +111,17 @@ public interface UserService {
      * @throws EntityNotFoundException if the user was not found.
      */
     void deleteUsersAddress(Long id) throws EntityNotFoundException;
+
+    /**
+     * Update users phone number
+     *
+     * @param id      The identifier
+     * @param phone   Phone to update
+     * @return Updated {@link User}
+     *
+     * @throws EntityNotFoundException if the user for update is not found
+     *                in DB.
+     */
+    User updatePhone(Long id, Phone phone) throws EntityNotFoundException;
+
 }

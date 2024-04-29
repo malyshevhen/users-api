@@ -1,5 +1,6 @@
 package com.github.malyshevhen.controllers;
 
+import com.github.malyshevhen.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -7,10 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.malyshevhen.api.UsersApi;
-import com.github.malyshevhen.dto.UpdateEmailForm;
-import com.github.malyshevhen.dto.UserInfo;
-import com.github.malyshevhen.dto.UserRegistrationForm;
-import com.github.malyshevhen.dto.UserUpdateForm;
 import com.github.malyshevhen.domain.models.Address;
 import com.github.malyshevhen.domain.dto.DateRange;
 import com.github.malyshevhen.domain.mapper.UserMapper;
@@ -116,6 +113,7 @@ public class UserController implements UsersApi {
      * @return Response containing the updated user's information and HTTP
      *         status:
      *         OK - 200. The user's email was successfully updated.
+     *         Bad request. Email already taken.
      *         Not Found - 404. No user was found with the given ID.
      *         Internal Server Error - 500. An error occurred while updating the
      *         user's email.
@@ -123,6 +121,25 @@ public class UserController implements UsersApi {
     @Override
     public ResponseEntity<UserInfo> updateUserEmail(Long id, UpdateEmailForm updateEmailForm) {
         var updatedUser = userService.updateEmail(id, updateEmailForm.getEmail());
+        var userInfo = userMapper.toUserInfo(updatedUser);
+        return ResponseEntity.ok(userInfo);
+    }
+
+    /**
+     * Updates the phone number of an existing user by their unique identifier.
+     *
+     * @param id Users ID (required)
+     * @param phone  (optional)
+     * @return Response containing the updated user's information and HTTP
+     *         status:
+     *         OK - 200. The user's phone was successfully updated.
+     *         Not Found - 404. No user was found with the given ID.
+     *         Internal Server Error - 500. An error occurred while updating the
+     *         user's email.
+     */
+    @Override
+    public ResponseEntity<UserInfo> updateUserPhone(Long id, Phone phone) {
+        var updatedUser = userService.updatePhone(id, phone);
         var userInfo = userMapper.toUserInfo(updatedUser);
         return ResponseEntity.ok(userInfo);
     }

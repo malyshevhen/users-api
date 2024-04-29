@@ -1,12 +1,12 @@
 package com.github.malyshevhen.configs;
 
-import javax.sql.DataSource;
-
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+
+import javax.sql.DataSource;
 
 /**
  * Global application configuration.
@@ -15,38 +15,25 @@ import org.springframework.context.annotation.Profile;
  */
 @Profile("!test")
 @Configuration
+@EnableConfigurationProperties
 public class ApplicationConfig {
 
-    @Value("${user.min-age}")
-    private int requiredAge;
-
-    @Value("${spring.datasource.url}")
-    private String dbURL;
-
-    @Value("${spring.datasource.username}")
-    private String dbUsername;
-
-    @Value("${spring.datasource.password}")
-    private String dbPassword;
-
-    /**
-     * Returns a {@link UserConstraints} instance that enforces the required age
-     * constraint.
-     *
-     * @return a {@link UserConstraints} instance that enforces the required age
-     *         constraint
-     */
     @Bean
     UserConstraints userConstraints() {
-        return () -> requiredAge;
+        return new UserConstraints();
     }
 
     @Bean
-    DataSource getDataSource() {
+    DatasourceProperties datasourceProperties() {
+        return new DatasourceProperties();
+    }
+
+    @Bean
+    DataSource getDataSource(DatasourceProperties datasourceProperties) {
         return DataSourceBuilder.create()
-                .url(dbURL)
-                .username(dbUsername)
-                .password(dbPassword)
+                .url(datasourceProperties.getUrl())
+                .username(datasourceProperties.getUsername())
+                .password(datasourceProperties.getPassword())
                 .build();
     }
 

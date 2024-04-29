@@ -6,14 +6,16 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * Defines the required age constraint for users.
- * 
+ * Datasource configuration properties
+ *
  * @author Evhen Malysh
  */
-@Setter
 @Getter
+@Setter
 @Component
-@ConfigurationProperties(prefix = "validation-constraints.user")
-public class UserConstraints {
-    private int requiredAge;
+@ConfigurationProperties(prefix = "spring.datasource")
+public class DatasourceProperties {
+    private String url;
+    private String username;
+    private String password;
 }

@@ -4,9 +4,8 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
-import com.github.malyshevhen.models.DateRange;
+import com.github.malyshevhen.domain.dto.DateRange;
 import com.github.malyshevhen.configs.UserConstraints;
-import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -16,8 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.malyshevhen.exceptions.EntityAlreadyExistsException;
 import com.github.malyshevhen.exceptions.EntityNotFoundException;
 import com.github.malyshevhen.exceptions.UserValidationException;
-import com.github.malyshevhen.models.Address;
-import com.github.malyshevhen.models.User;
+import com.github.malyshevhen.domain.models.Address;
+import com.github.malyshevhen.domain.models.User;
 import com.github.malyshevhen.repositories.UserRepository;
 import com.github.malyshevhen.services.UserService;
 

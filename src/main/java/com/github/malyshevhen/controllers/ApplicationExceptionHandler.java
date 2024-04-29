@@ -1,11 +1,9 @@
 package com.github.malyshevhen.controllers;
 
 import com.github.malyshevhen.exceptions.BaseApplicationException;
-import com.github.malyshevhen.exceptions.ErrorResponse;
+import com.github.malyshevhen.domain.dto.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
-
 import org.springframework.beans.BeanInstantiationException;
-import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

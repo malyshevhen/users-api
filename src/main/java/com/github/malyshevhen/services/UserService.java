@@ -1,14 +1,14 @@
 package com.github.malyshevhen.services;
 
-import com.github.malyshevhen.models.DateRange;
+import com.github.malyshevhen.domain.dto.DateRange;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
 
 import com.github.malyshevhen.exceptions.EntityAlreadyExistsException;
 import com.github.malyshevhen.exceptions.EntityNotFoundException;
-import com.github.malyshevhen.models.Address;
-import com.github.malyshevhen.models.User;
+import com.github.malyshevhen.domain.models.Address;
+import com.github.malyshevhen.domain.models.User;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;

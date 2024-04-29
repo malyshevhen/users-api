@@ -11,16 +11,16 @@ import com.github.malyshevhen.dto.UpdateEmailForm;
 import com.github.malyshevhen.dto.UserInfo;
 import com.github.malyshevhen.dto.UserRegistrationForm;
 import com.github.malyshevhen.dto.UserUpdateForm;
-import com.github.malyshevhen.models.Address;
-import com.github.malyshevhen.models.DateRange;
-import com.github.malyshevhen.models.mapper.UserMapper;
+import com.github.malyshevhen.domain.models.Address;
+import com.github.malyshevhen.domain.dto.DateRange;
+import com.github.malyshevhen.domain.mapper.UserMapper;
 import com.github.malyshevhen.services.UserService;
 import lombok.RequiredArgsConstructor;
 
 /**
  * Provides a REST API for managing user-related operations, including
  * registration, retrieval, update, and deletion.
- * 
+ *
  * @author Evhen Malysh
  */
 @RestController
@@ -35,7 +35,7 @@ public class UserController implements UsersApi {
      *
      * @param userRegistrationForm the user registration form containing the
      *                             necessary data to create a new user
-     * @return a ResponseEntity containing the newly registered user's information
+     * @return Response containing the newly registered user's information
      *         and HTTP status:
      *         Created - 201.
      *         Bad request - 400. Invalid {@code email} or {@code birthDate},
@@ -73,7 +73,7 @@ public class UserController implements UsersApi {
      * Retrieves a user by their unique identifier.
      *
      * @param id the unique identifier of the user to retrieve
-     * @return a ResponseEntity containing the user's information and HTTP status:
+     * @return Response containing the user's information and HTTP status:
      *         OK - 200. The user was found and returned.
      *         Not Found - 404. No user was found with the given ID.
      *         Internal Server Error - 500. An error occurred while retrieving the
@@ -92,7 +92,7 @@ public class UserController implements UsersApi {
      * @param id             the unique identifier of the user to update
      * @param userUpdateForm the user update form containing the new data to update
      *                       the user with
-     * @return a ResponseEntity containing the updated user's information and HTTP
+     * @return Response containing the updated user's information and HTTP
      *         status:
      *         OK - 200. The user was successfully updated.
      *         Not Found - 404. No user was found with the given ID.
@@ -113,7 +113,7 @@ public class UserController implements UsersApi {
      * @param id              the unique identifier of the user to update
      * @param updateEmailForm the form containing the new email address to update
      *                        the user with
-     * @return a ResponseEntity containing the updated user's information and HTTP
+     * @return Response containing the updated user's information and HTTP
      *         status:
      *         OK - 200. The user's email was successfully updated.
      *         Not Found - 404. No user was found with the given ID.
@@ -132,7 +132,7 @@ public class UserController implements UsersApi {
      *
      * @param id      the unique identifier of the user to update
      * @param address the new address to update the user with
-     * @return a ResponseEntity containing the updated user's information and HTTP
+     * @return Response containing the updated user's information and HTTP
      *         status:
      *         OK - 200. The user's address was successfully updated.
      *         Not Found - 404. No user was found with the given ID.
@@ -150,7 +150,7 @@ public class UserController implements UsersApi {
      * Deletes a user by their unique identifier.
      *
      * @param id the unique identifier of the user to delete
-     * @return a ResponseEntity with HTTP status:
+     * @return Response with HTTP status:
      *         No Content - 204. The user was successfully deleted.
      *         Not Found - 404. No user was found with the given ID.
      *         Internal Server Error - 500. An error occurred while deleting the
@@ -162,6 +162,16 @@ public class UserController implements UsersApi {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Deletes a users address by users ID.
+     *
+     * @param id Users ID (required)
+     * @return Response with HTTP status:
+     *         No Content - 204. The user was successfully deleted.
+     *         Not Found - 404. No user was found with the given ID.
+     *         Internal Server Error - 500. An error occurred while deleting the
+     *         user.
+     */
     @Override
     public ResponseEntity<Void> deleteUserAddress(Long id) {
         userService.deleteUsersAddress(id);

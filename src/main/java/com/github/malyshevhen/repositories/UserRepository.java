@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.lang.NonNull;
 
-import com.github.malyshevhen.models.User;
+import com.github.malyshevhen.domain.models.User;
 
 /**
  * Repository interface for managing User entities.

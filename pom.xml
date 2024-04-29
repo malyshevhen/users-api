@@ -206,9 +206,9 @@
                             </configOptions>
                             <schemaMappings>
                                 PageableObject=org.springframework.data.domain.Pageable,
-                                Address=com.github.malyshevhen.models.Address,
-                                ErrorResponse=com.github.malyshevhen.exceptions.ErrorResponse,
-                                DateRange=com.github.malyshevhen.models.DateRange,
+                                Address=com.github.malyshevhen.domain.models.Address,
+                                ErrorResponse=com.github.malyshevhen.domain.dto.ErrorResponse,
+                                DateRange=com.github.malyshevhen.domain.dto.DateRange,
                             </schemaMappings>
                             <typeMappings>
                                 <typeMapping>

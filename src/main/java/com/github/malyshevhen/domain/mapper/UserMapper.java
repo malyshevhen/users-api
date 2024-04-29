@@ -1,12 +1,12 @@
-package com.github.malyshevhen.models.mapper;
+package com.github.malyshevhen.domain.mapper;
 
+import com.github.malyshevhen.domain.models.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import com.github.malyshevhen.dto.UserInfo;
 import com.github.malyshevhen.dto.UserRegistrationForm;
 import com.github.malyshevhen.dto.UserUpdateForm;
-import com.github.malyshevhen.models.User;
 
 /**
  * Mapper interface for converting between User entities and DTO objects.

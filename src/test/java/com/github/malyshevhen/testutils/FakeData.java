@@ -7,8 +7,8 @@ import java.util.regex.Pattern;
 import com.github.malyshevhen.dto.UserInfo;
 import com.github.malyshevhen.dto.UserRegistrationForm;
 import com.github.malyshevhen.dto.UserUpdateForm;
-import com.github.malyshevhen.models.Address;
-import com.github.malyshevhen.models.User;
+import com.github.malyshevhen.domain.models.Address;
+import com.github.malyshevhen.domain.models.User;
 
 public class FakeData {
 

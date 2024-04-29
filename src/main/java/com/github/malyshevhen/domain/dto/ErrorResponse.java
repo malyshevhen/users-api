@@ -1,4 +1,4 @@
-package com.github.malyshevhen.exceptions;
+package com.github.malyshevhen.domain.dto;
 
 /**
  * Represents an error response containing a message and a timestamp.

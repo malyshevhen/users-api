@@ -32,9 +32,9 @@ import com.github.malyshevhen.configs.TestApplicationConfig;
 import com.github.malyshevhen.exceptions.EntityAlreadyExistsException;
 import com.github.malyshevhen.exceptions.EntityNotFoundException;
 import com.github.malyshevhen.exceptions.UserValidationException;
-import com.github.malyshevhen.models.Address;
-import com.github.malyshevhen.models.DateRange;
-import com.github.malyshevhen.models.User;
+import com.github.malyshevhen.domain.models.Address;
+import com.github.malyshevhen.domain.dto.DateRange;
+import com.github.malyshevhen.domain.models.User;
 import com.github.malyshevhen.repositories.UserRepository;
 import com.github.malyshevhen.services.UserService;
 

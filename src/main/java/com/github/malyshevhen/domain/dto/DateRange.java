@@ -1,4 +1,4 @@
-package com.github.malyshevhen.models;
+package com.github.malyshevhen.domain.dto;
 
 import java.time.LocalDate;
 

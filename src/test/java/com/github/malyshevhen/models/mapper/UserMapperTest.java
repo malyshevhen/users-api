@@ -7,8 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import com.github.malyshevhen.domain.mapper.UserMapper;
 import com.github.malyshevhen.dto.UserInfo;
-import com.github.malyshevhen.models.User;
+import com.github.malyshevhen.domain.models.User;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 

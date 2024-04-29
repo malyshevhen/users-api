@@ -1,14 +1,13 @@
 package com.github.malyshevhen.configs;
 
-import javax.sql.DataSource;
-
-import org.springframework.beans.factory.annotation.Value;
+import lombok.Setter;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 
-import lombok.Setter;
+import javax.sql.DataSource;
 
 /**
  * This class configures a Spring test application context with a user
@@ -22,34 +21,28 @@ import lombok.Setter;
 @Profile("test")
 @Setter
 @TestConfiguration
+@EnableConfigurationProperties
 public class TestApplicationConfig {
-
-    @Value("${user.min-age}")
-    private int requiredAge;
-
-    @Value("${spring.datasource.url}")
-    private String dbURL;
-
-    @Value("${spring.datasource.username}")
-    private String dbUsername;
-
-    @Value("${spring.datasource.password}")
-    private String dbPassword;
 
     @Bean
     UserConstraints userConstraints() {
-        return () -> requiredAge;
+        return new UserConstraints();
+    }
+
+    @Bean
+    DatasourceProperties datasourceProperties() {
+        return new DatasourceProperties();
     }
 
     /**
      * Provides a test-specific DataSource for the application.
      */
     @Bean
-    DataSource getDataSource() {
+    DataSource getDataSource(DatasourceProperties datasourceProperties) {
         return DataSourceBuilder.create()
-                .url(dbURL)
-                .username(dbUsername)
-                .password(dbPassword)
+                .url(datasourceProperties.getUrl())
+                .username(datasourceProperties.getUsername())
+                .password(datasourceProperties.getPassword())
                 .build();
     }
 }

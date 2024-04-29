@@ -329,7 +329,7 @@ public class UserServiceIntegrationTest {
         var validUser = getValidUser();
         var savedUser = userService.save(validUser);
 
-        var newEmail = getValidEmail();
+        var newEmail = "emai.for.update@domain.com";
 
         // Update:
         userService.updateEmail(savedUser.getId(), newEmail);

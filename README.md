@@ -1,4 +1,4 @@
-# Users API Server
+# Users API Serve 👨‍✈r
 
 # Table of Contents
 
@@ -67,41 +67,35 @@ Using this approach all team members can be sure that we place on the same point
    - 1.2. First name (required)
    - 1.3. Last name (required)
    - 1.4. Birth date (required and earlier than current date)
-
 2. User functionality:
    - 2.1. Create user (registration for users over 18 years old)
    - 2.2. Update one/some user fields
    - 2.3. Update all user fields
    - 2.4. Delete user
    - 2.5. Search for users by birth date range (with validation that "From" date is less than "To" date)
-
 3. The code is covered by unit tests using Spring.
-
-4. The code has error handling for REST API responses wia @ExceptionHandler implemented in ApplicationExceptionHandler class.
-
+4. The code has error handling for REST API responses wia `ExceptionHandler` implemented in `ApplicationExceptionHandler` class.
 5. The API responses are in JSON format.
-
-6. Implement persistent layer using Spring Data JPA and PostgreSQL database.
-
-7. The project uses Spring Boot 3.2.5 and Java 21.
+6. Implement persistent layer using `Spring Data JPA` and `PostgreSQL` database.
+7. The project uses `Spring Boot 3.2.5` and `Java 21`.
 
 ### Used technologies:
 
-- java 21: The latest LTS version of Java at the time, providing the latest language features and performance improvements.
-- spring boot 3.2.5: The latest version of the popular Spring Boot framework, which simplifies the development of Spring-based applications.
-- spring-boot-web: Provides the necessary dependencies for building web applications.
-- spring-boot-data-jpa: Provides support for the Java Persistence API (JPA) and integration with various data sources.
-- spring-boot-validation: Provides support for validating user input using annotations and custom validation rules.
-- flyway: A database migration tool that helps manage and version control database schema changes.
-- postgresql: A popular open-source relational database management system used for data persistence.
-- jackson-nullable: A library that helps handle null values in JSON serialization and deserialization.
-- lombok: A library that generates boilerplate code, such as getters, setters, and constructors, reducing code verbosity.
-- mapstruct: A code generator that simplifies the implementation of mappings between Java bean types.
-- spring-boot-test: Provides utilities and annotations for testing Spring Boot applications.
-- junit-jupiter: The latest version of the popular JUnit testing framework.
-- testcontainers: A library that provides lightweight, throwaway instances of common databases, or anything else that can run in a Docker container.
-- jacoco: A code coverage library that helps measure the code coverage of tests.
-- openapi-generator-maven-plugin from openapitools: A plugin that generates server stubs, and documentation from an OpenAPI specification.
+- **java 21**: The latest LTS version of Java at the time, providing the latest language features and performance improvements.
+- **spring boot 3.2.5**: The latest version of the popular Spring Boot framework, which simplifies the development of Spring-based applications.
+- **spring-boot-web:** Provides the necessary dependencies for building web applications.
+- **spring-boot-data-jpa:** Provides support for the Java Persistence API (JPA) and integration with various data sources.
+- **spring-boot-validation:** Provides support for validating user input using annotations and custom validation rules.
+- **flyway:** A database migration tool that helps manage and version control database schema changes.
+- **postgresql:** A popular open-source relational database management system used for data persistence.
+- **jackson-nullable:** A library that helps handle null values in JSON serialization and deserialization.
+- **lombok:** A library that generates boilerplate code, such as getters, setters, and constructors, reducing code verbosity.
+- **mapstruct:** A code generator that simplifies the implementation of mappings between Java bean types.
+- **spring-boot-test:** Provides utilities and annotations for testing Spring Boot applications.
+- **junit-jupiter:** The latest version of the popular JUnit testing framework.
+- **testcontainers:** A library that provides lightweight, throwaway instances of common databases, or anything else that can run in a Docker container.
+- **jacoco**: A code coverage library that helps measure the code coverage of tests.
+- **openapi-generator-maven-plugin from openapitools**: A plugin that generates server stubs, and documentation from an OpenAPI specification.
 
 ### Simplified Project structure:
 
@@ -268,6 +262,7 @@ To run the application using docker-compose-prod.yaml, follow these steps:
    4. Run the following command to start the containers:
    ```bash
    docker-compose -f docker-compose-prod.yaml up -d
+
    # This command will build and start the containers defined in the docker-compose-prod.yaml file in detached mode.
    ```
    5. Wait for the containers to start up. You can check the status of the containers using the following command:
@@ -278,6 +273,7 @@ To run the application using docker-compose-prod.yaml, follow these steps:
    7. To stop the containers, run the following command:
    ```bash
    docker-compose -f docker-compose-prod.yaml down
+
    # This will stop and remove the containers.
    ```
 

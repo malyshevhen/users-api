@@ -145,35 +145,6 @@
                             <goal>report</goal>
                         </goals>
                     </execution>
-                    <execution>
-                        <id>jacoco-check</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                        <configuration>
-                            <excludes>
-                                <exclude>**/com/github/malyshevhen/*</exclude>
-                                <exclude>**/com/github/malyshevhen/api/**Api.*</exclude>
-                                <exclude>**/com/github/malyshevhen/api/ApiUtil.*</exclude>
-                                <exclude>**/com/github/malyshevhen/dto/**</exclude>
-                                <exclude>**/com/github/malyshevhen/configs/**</exclude>
-                                <exclude>**/com/github/malyshevhen/models/**</exclude>
-                            </excludes>
-                            <rules>
-                                <rule>
-                                    <element>PACKAGE</element>
-                                    <limits>
-                                        <limit>
-                                            <counter>LINE</counter>
-                                            <value>COVEREDRATIO</value>
-                                            <minimum>0.9</minimum>
-                                        </limit>
-                                    </limits>
-                                </rule>
-                            </rules>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
 

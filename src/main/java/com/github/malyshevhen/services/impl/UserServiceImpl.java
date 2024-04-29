@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import com.github.malyshevhen.domain.dto.DateRange;
 import com.github.malyshevhen.configs.UserConstraints;
+import com.github.malyshevhen.dto.Phone;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -184,6 +185,14 @@ public class UserServiceImpl implements UserService {
     public void deleteUsersAddress(Long id) {
         var existingUser = getById(id);
         existingUser.setAddress(null);
+    }
+
+    @Transactional
+    @Override
+    public User updatePhone(Long id, Phone phone) {
+       var user = getById(id);
+       user.setPhone(user.getPhone());
+       return user;
     }
 
     /**

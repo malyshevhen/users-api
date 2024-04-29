@@ -1,6 +1,7 @@
 package com.github.malyshevhen.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.malyshevhen.dto.Phone;
 import com.github.malyshevhen.dto.UpdateEmailForm;
 import com.github.malyshevhen.dto.UserInfo;
 import com.github.malyshevhen.dto.UserRegistrationForm;
@@ -44,7 +45,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @ActiveProfiles("test")
-@Import({UserMapperImpl.class})
+@Import({ UserMapperImpl.class })
 @WebMvcTest(UserController.class)
 class UserControllerTest {
 
@@ -65,6 +66,12 @@ class UserControllerTest {
     @Captor
     private ArgumentCaptor<Pageable> pageableCaptor;
 
+    @Captor
+    private ArgumentCaptor<Address> addressCaptor;
+
+    @Captor
+    private ArgumentCaptor<Phone> phoneArgumentCaptor;
+
     @DisplayName("register users should return 201 if required fields is valid")
     @Test
     @SneakyThrows
@@ -80,10 +87,10 @@ class UserControllerTest {
 
         // Execute:
         var response = mvc.perform(post(USERS_URL)
-                                       .contentType(MediaType.APPLICATION_JSON)
-                                       .content(objectMapper.writeValueAsString(registerForm)))
-                           .andReturn()
-                           .getResponse();
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(registerForm)))
+                .andReturn()
+                .getResponse();
 
         // Verify:
         assertEquals(201, response.getStatus());
@@ -108,17 +115,17 @@ class UserControllerTest {
     void registerUserBadRequest(String email, String firstName, String lastName) {
         // Given:
         var registerForm = new UserRegistrationForm()
-                               .email(email)
-                               .firstName(firstName)
-                               .lastName(lastName)
-                               .birthDate(LocalDate.of(1990, 1, 1));
+                .email(email)
+                .firstName(firstName)
+                .lastName(lastName)
+                .birthDate(LocalDate.of(1990, 1, 1));
 
         // Execute:
         var response = mvc.perform(post(USERS_URL)
-                                       .contentType(MediaType.APPLICATION_JSON)
-                                       .content(objectMapper.writeValueAsString(registerForm)))
-                           .andReturn()
-                           .getResponse();
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(registerForm)))
+                .andReturn()
+                .getResponse();
 
         // Verify:
         assertEquals(400, response.getStatus());
@@ -134,15 +141,15 @@ class UserControllerTest {
 
     private static Stream<Arguments> registerUserBadRequest() {
         return Stream.of(
-            // Invalid email:
-            Arguments.of("@invalid.com", "John", "Doe", LocalDate.now().minusYears(20)),
-            Arguments.of("invalid@email", "John", "Doe", LocalDate.now().minusYears(20)),
-            Arguments.of("invalid.email.com", "John", "Doe", LocalDate.now().minusYears(20)),
-            Arguments.of("", "John", "Doe", LocalDate.now().minusYears(20)),
-            // Empty first name:
-            Arguments.of("valid@email.com", "", "Doe", LocalDate.now().minusYears(20)),
-            // Empty last name:
-            Arguments.of("valid@email.com", "John", "", LocalDate.now().minusYears(20)));
+                // Invalid email:
+                Arguments.of("@invalid.com", "John", "Doe", LocalDate.now().minusYears(20)),
+                Arguments.of("invalid@email", "John", "Doe", LocalDate.now().minusYears(20)),
+                Arguments.of("invalid.email.com", "John", "Doe", LocalDate.now().minusYears(20)),
+                Arguments.of("", "John", "Doe", LocalDate.now().minusYears(20)),
+                // Empty first name:
+                Arguments.of("valid@email.com", "", "Doe", LocalDate.now().minusYears(20)),
+                // Empty last name:
+                Arguments.of("valid@email.com", "John", "", LocalDate.now().minusYears(20)));
     }
 
     @DisplayName("get all users should return 200 and list of users")
@@ -159,9 +166,9 @@ class UserControllerTest {
 
         // Execute:
         var response = mvc.perform(get(USERS_URL)
-                                       .contentType(MediaType.APPLICATION_JSON))
-                           .andReturn()
-                           .getResponse();
+                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn()
+                .getResponse();
 
         // Verify:
         assertEquals(200, response.getStatus());
@@ -175,15 +182,15 @@ class UserControllerTest {
 
     @DisplayName("get all users should return 400 if date range is invalid")
     @ParameterizedTest(name = "{index}: get all users in date range: {0}")
-    @ValueSource(strings = {"?from=2020-01-01&to=1990-10-10", "?from=0000-00-00&to=0000-00-00", "?from=0&to=10",
-        "?from=INVALID&to=INVALID"})
+    @ValueSource(strings = { "?from=2020-01-01&to=1990-10-10", "?from=0000-00-00&to=0000-00-00", "?from=0&to=10",
+            "?from=INVALID&to=INVALID" })
     @SneakyThrows
     void getAllUsers_BadRequest(String dateRange) {
         // Execute:
         var response = mvc.perform(get(USERS_URL + dateRange)
-                                       .contentType(MediaType.APPLICATION_JSON))
-                           .andReturn()
-                           .getResponse();
+                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn()
+                .getResponse();
 
         assertEquals(400, response.getStatus());
 
@@ -191,8 +198,8 @@ class UserControllerTest {
 
     @DisplayName("Get all with invalid pagination should use default pagination")
     @ParameterizedTest(name = "{index}: Get All with pagination: {0}")
-    @ValueSource(strings = {"?size=INVALID&page=INVALID", "?page=-10&size=INVALID", "?page=INVALID&size=-10",
-        "?page=-100&size=-20"})
+    @ValueSource(strings = { "?size=INVALID&page=INVALID", "?page=-10&size=INVALID", "?page=INVALID&size=-10",
+            "?page=-100&size=-20" })
     @SneakyThrows
     void getAllUsers_withInvalidPagination_useDefaultPagination(String pagination) {
         // Prepare:
@@ -207,9 +214,9 @@ class UserControllerTest {
 
         // Execute:
         var response = mvc.perform(get(USERS_URL + pagination)
-                                       .contentType(MediaType.APPLICATION_JSON))
-                           .andReturn()
-                           .getResponse();
+                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn()
+                .getResponse();
 
         assertEquals(200, response.getStatus());
 
@@ -231,9 +238,9 @@ class UserControllerTest {
 
         // Execute:
         var response = mvc.perform(get(USERS_URL + "/1")
-                                       .contentType(MediaType.APPLICATION_JSON))
-                           .andReturn()
-                           .getResponse();
+                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn()
+                .getResponse();
 
         // Verify:
         assertEquals(200, response.getStatus());
@@ -265,10 +272,10 @@ class UserControllerTest {
 
         // Execute:
         var response = mvc.perform(put(USERS_URL + "/1")
-                                       .contentType(MediaType.APPLICATION_JSON)
-                                       .content(objectMapper.writeValueAsString(updateForm)))
-                           .andReturn()
-                           .getResponse();
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateForm)))
+                .andReturn()
+                .getResponse();
 
         // Verify:
         assertEquals(200, response.getStatus());
@@ -290,8 +297,8 @@ class UserControllerTest {
     void deleteUserById() {
         // Execute:
         var response = mvc.perform(delete(USERS_URL + "/1"))
-                           .andReturn()
-                           .getResponse();
+                .andReturn()
+                .getResponse();
 
         // Verify:
         assertEquals(204, response.getStatus());
@@ -313,10 +320,10 @@ class UserControllerTest {
 
         // Execute:
         var response = mvc.perform(patch(USERS_URL + "/{id}/email", id)
-                                       .contentType(MediaType.APPLICATION_JSON)
-                                       .content(objectMapper.writeValueAsString(updateEmailForm)))
-                           .andReturn()
-                           .getResponse();
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateEmailForm)))
+                .andReturn()
+                .getResponse();
 
         // Verify:
         assertEquals(200, response.getStatus());
@@ -343,10 +350,10 @@ class UserControllerTest {
 
         // Execute:
         var response = mvc.perform(patch(USERS_URL + "/{id}/email", id)
-                                       .contentType(MediaType.APPLICATION_JSON)
-                                       .content(objectMapper.writeValueAsString(updateEmailForm)))
-                           .andReturn()
-                           .getResponse();
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateEmailForm)))
+                .andReturn()
+                .getResponse();
 
         // Verify:
         assertEquals(400, response.getStatus());
@@ -362,10 +369,10 @@ class UserControllerTest {
 
     private static Stream<Arguments> updateUserEmailBadRequest() {
         return Stream.of(
-            Arguments.of("@invalid.com"),
-            Arguments.of("invalid@email"),
-            Arguments.of("invalid.email.com"),
-            Arguments.of(""));
+                Arguments.of("@invalid.com"),
+                Arguments.of("invalid@email"),
+                Arguments.of("invalid.email.com"),
+                Arguments.of(""));
     }
 
     @DisplayName("update user address should return 200 and updated user info")
@@ -374,19 +381,17 @@ class UserControllerTest {
     void updateUserAddress() {
         // Given:
         var id = 1L;
-        var address = getValidAddress();
-
         var updatedUser = getValidUser();
-        updatedUser.setAddress(address);
+        var address = updatedUser.getAddress();
 
         when(userService.updateAddress(anyLong(), any(Address.class))).thenReturn(updatedUser);
 
         // Execute:
         var response = mvc.perform(patch(USERS_URL + "/{id}/address", id)
-                                       .contentType(MediaType.APPLICATION_JSON)
-                                       .content(objectMapper.writeValueAsString(address)))
-                           .andReturn()
-                           .getResponse();
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(address)))
+                .andReturn()
+                .getResponse();
 
         // Verify:
         assertEquals(200, response.getStatus());
@@ -404,6 +409,14 @@ class UserControllerTest {
         assertEquals(address.getCity(), userInfo.getAddress().getCity());
         assertEquals(address.getCountry(), userInfo.getAddress().getCountry());
         assertEquals(address.getNumber(), userInfo.getAddress().getNumber());
+
+        verify(userService).updateAddress(anyLong(), addressCaptor.capture());
+        var capturedAddress = addressCaptor.getValue();
+
+        assertEquals(address.getCity(), capturedAddress.getCity());
+        assertEquals(address.getCountry(), capturedAddress.getCountry());
+        assertEquals(address.getStreet(), capturedAddress.getStreet());
+        assertEquals(address.getNumber(), capturedAddress.getNumber());
     }
 
     @DisplayName("delete user address should return 204")
@@ -415,12 +428,67 @@ class UserControllerTest {
 
         // Execute:
         var response = mvc.perform(delete(USERS_URL + "/{id}/address", id)
-                        .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andReturn()
                 .getResponse();
 
         // Verify:
         assertEquals(204, response.getStatus());
+    }
+
+    @DisplayName("update user phone should return 200 and updated user info")
+    @Test
+    @SneakyThrows
+    void updatePhone() {
+        // Given:
+        var id = 1L;
+        var phone = "123456789";
+        var updatePhoneForm = new Phone().phone(phone);
+        var updatedUser = getValidUser();
+
+        when(userService.updatePhone(id, updatePhoneForm)).thenReturn(updatedUser);
+
+        // Execute:
+        var response = mvc.perform(patch(USERS_URL + "/{id}/phone", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updatePhoneForm)))
+                .andReturn()
+                .getResponse();
+        
+        // Verify:
+        assertEquals(200, response.getStatus());
+
+        var responseBody = response.getContentAsString();
+        var userInfo = objectMapper.readValue(responseBody, UserInfo.class);
+
+        assertNotNull(userInfo);
+        assertEquals(updatedUser.getId(), userInfo.getId());
+        assertEquals(updatedUser.getEmail(), userInfo.getEmail());
+        assertEquals(updatedUser.getFirstName(), userInfo.getFirstName());
+        assertEquals(updatedUser.getLastName(), userInfo.getLastName());
+        assertEquals(updatedUser.getBirthDate(), userInfo.getBirthDate());
+
+        verify(userService).updatePhone(anyLong(), phoneArgumentCaptor.capture());
+        var capturedUpdatePhone = phoneArgumentCaptor.getValue();
+
+        assertEquals(phone, capturedUpdatePhone.getPhone());
+    }
+
+    @DisplayName("update users phone should return 204")
+    @Test
+    @SneakyThrows
+    void updateUserPhone_BadRequest() {
+        // Given:
+        var id = "INVALID";
+
+        // Execute:
+        var response = mvc.perform(patch(USERS_URL + "/{id}/phone", id)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn()
+                .getResponse();
+
+        // Verify:
+        assertEquals(400, response.getStatus());
     }
 
 }

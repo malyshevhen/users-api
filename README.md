@@ -2,7 +2,7 @@
 
 # Table of Contents
 
-- [Users API Server](#users-api-server)
+- [Users API Serve 👨‍✈r](#users-api-serve-r)
 - [Table of Contents](#table-of-contents)
 - [Java practical test assignment](#java-practical-test-assignment)
   - [The task has two parts:](#the-task-has-two-parts)
@@ -157,11 +157,9 @@ This class is likely used in the application's domain layer, specifically in DTO
 6. The `exceptions` package contains custom exception classes for the application. These exceptions are used to handle specific error scenarios and provide meaningful error messages to the client.<br>
 Here's a brief description of the classes in this package:
    1. `BaseApplicationException`: This is an abstract base class for all custom application exceptions. It extends the `RuntimeException` class and provides a constructor that accepts an error message and an HTTP status code. This class serves as a parent for other application-specific exceptions, allowing them to inherit common behavior and properties.
-   2. `UserAlreadyExistsException`: This exception is thrown when attempting to create a new user with an email address that already exists in the system. It extends the `BaseApplicationException` class and is typically thrown by the service layer when validating user data during registration.
-   3. `UserNotFoundException`: This exception is thrown when attempting to retrieve or update a user that does not exist in the system. It extends the `BaseApplicationException` class and is typically thrown by the service layer when performing operations on non-existent users.
-   4. `InvalidDateRangeException`: This exception is thrown when the provided date range is invalid, such as when the start date is after the end date. It extends the `BaseApplicationException` class and is typically thrown by the service layer or utility classes when validating date range inputs.
-   5. `InvalidEmailException`: This exception is thrown when the provided email address is invalid or does not conform to the expected format. It extends the `BaseApplicationException` class and is typically thrown by the service layer or utility classes when validating email inputs.
-   6. `InvalidPhoneNumberException`: This exception is thrown when the provided phone number is invalid or does not conform to the expected format. It extends the `BaseApplicationException` class and is typically thrown by the service layer or utility classes when validating phone number inputs.
+   2. `EntityAlreadyExistsException`: This exception is thrown when attempting to create new entity with that already exists in the system. It extends the `BaseApplicationException` class and is typically thrown by the service layer when validating user data during registration.
+   3. `EntityNotFoundException`: This exception is thrown when attempting to retrieve or update an entity that does not exist in the system. It extends the `BaseApplicationException` class and is typically thrown by the service layer when performing operations on non-existent users.
+   4. `UserValidationException`: This exception is thrown when the provided user properties is invalid or does not conform to the expected format. It extends the `BaseApplicationException` class and is typically thrown by the service layer or utility classes when validating email inputs.
 These custom exceptions are typically used in the service layer and propagated up to the controller layer. The `ApplicationExceptionHandler` class, which is a centralized exception handling mechanism, catches these exceptions and returns appropriate error responses to the client with the corresponding HTTP status codes and error messages.<br>
 By using custom exceptions, the application can provide more specific and meaningful error messages to the client, making it easier to understand and handle different error scenarios. Additionally, these exceptions can be extended or modified as needed to accommodate new error cases or requirements in the future.
 

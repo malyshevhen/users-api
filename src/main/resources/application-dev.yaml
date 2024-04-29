@@ -1,7 +1,6 @@
 server:
   servlet:
     contextPath: /api
-  port: 8080
 
 spring:
   application:
@@ -13,9 +12,9 @@ spring:
         default-page-size: 20
 # Datasource configuration
   datasource:
-    url: "${DATABASE_URL}"
-    username: "${DATABASE_USERNAME}"
-    password: "${DATABASE_PASSWORD}"
+    url: "jdbc:postgresql://localhost:5432/users_db"
+    username: "postgres"
+    password: "password"
 
 # Custom validation constraints
 validation-constraints:
@@ -25,11 +24,11 @@ validation-constraints:
 # Logger
 logging:
   level:
-    root: ERROR
+    root: INFO
     org.springframework.web: INFO
     com.github.malyshevhen: INFO
   pattern:
     console: "%d{HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
     file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
   file:
-    name: '.logs/users-api.log'
+    name: '.logs/users-api-dev.log'

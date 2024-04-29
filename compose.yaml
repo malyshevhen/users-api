@@ -1,0 +1,17 @@
+services:
+
+# Used only for development (in `dev` profile)
+  users-api-db-dev:
+    image: postgres:16-alpine
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: users_db
+    healthcheck:
+      test: "pg_isready -U postgres -d users_db"
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: on-failure

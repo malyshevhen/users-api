@@ -234,7 +234,7 @@ DELETE /api/users/{id}/address -- Deletes only address field of an existing user
 
 ### Tests
 
-The project includes comprehensive **test coverage**, with various types of tests such as unit tests, integration tests, and end-to-end tests. The test coverage report can be found at [test-coverage-report/index.html](test-coverage-report/index.html).
+The project includes comprehensive **test coverage**, with various types of tests such as unit tests, integration tests, and end-to-end tests. The test coverage report can be found at [Test Coverage](https://malyshevhen.github.io/users-api).
 
 1. The `UserControllerTest` class is a unit test suite for the `UserController` class in a Spring Boot application. It tests various scenarios related to user management, including user registration, retrieval, updating, and deletion.<br>
 The test class is annotated with `@WebMvcTest` to load only the web layer and mock the service layer. It also imports the `UserMapperImpl` class for mapping between domain models and DTOs.<br>

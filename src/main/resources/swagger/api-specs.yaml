@@ -535,12 +535,6 @@ components:
           minimum: 1
 
   responses:
-    NotModified:
-      description: Not modified. Banner name is the same
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/ErrorResponse"
     BadRequest:
       description: Bad request. Invalid image name or ID parameter
       content:

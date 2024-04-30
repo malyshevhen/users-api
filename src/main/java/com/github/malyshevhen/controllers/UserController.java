@@ -128,8 +128,8 @@ public class UserController implements UsersApi {
     /**
      * Updates the phone number of an existing user by their unique identifier.
      *
-     * @param id Users ID (required)
-     * @param phone  (optional)
+     * @param id    Users ID (required)
+     * @param phone phone (optional)
      * @return Response containing the updated user's information and HTTP
      *         status:
      *         OK - 200. The user's phone was successfully updated.

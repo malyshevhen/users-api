@@ -1,0 +1,389 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > UserServiceImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.github.malyshevhen.services.impl</a>
+</div>
+
+<h1>Coverage Summary for Class: UserServiceImpl (com.github.malyshevhen.services.impl)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UserServiceImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    92.3%
+  </span>
+  <span class="absValue">
+    (12/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    81.2%
+  </span>
+  <span class="absValue">
+    (13/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90.6%
+  </span>
+  <span class="absValue">
+    (48/53)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">UserServiceImpl$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    92.3%
+  </span>
+  <span class="absValue">
+    (12/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    81.2%
+  </span>
+  <span class="absValue">
+    (13/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90.6%
+  </span>
+  <span class="absValue">
+    (48/53)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.github.malyshevhen.services.impl;
+&nbsp;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.time.temporal.ChronoUnit;
+&nbsp;import java.util.Objects;
+&nbsp;
+&nbsp;import com.github.malyshevhen.domain.dto.DateRange;
+&nbsp;import com.github.malyshevhen.configs.UserConstraints;
+&nbsp;import com.github.malyshevhen.dto.Phone;
+&nbsp;import org.springframework.data.domain.Page;
+&nbsp;import org.springframework.data.domain.Pageable;
+&nbsp;import org.springframework.data.jpa.domain.Specification;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.springframework.transaction.annotation.Transactional;
+&nbsp;
+&nbsp;import com.github.malyshevhen.exceptions.EntityAlreadyExistsException;
+&nbsp;import com.github.malyshevhen.exceptions.EntityNotFoundException;
+&nbsp;import com.github.malyshevhen.exceptions.UserValidationException;
+&nbsp;import com.github.malyshevhen.domain.models.Address;
+&nbsp;import com.github.malyshevhen.domain.models.User;
+&nbsp;import com.github.malyshevhen.repositories.UserRepository;
+&nbsp;import com.github.malyshevhen.services.UserService;
+&nbsp;
+&nbsp;import com.github.malyshevhen.configs.ApplicationConfig;
+&nbsp;import lombok.RequiredArgsConstructor;
+&nbsp;
+&nbsp;/**
+&nbsp; * Provides an implementation of the {@link UserService} interface, handling
+&nbsp; * user-related operations such as saving, retrieving, updating, and deleting
+&nbsp; * users.
+&nbsp; * &lt;p&gt;
+&nbsp; * This service implementation uses a {@link UserRepository} to interact with
+&nbsp; * the underlying data storage and a {@link ApplicationConfig} to access
+&nbsp; * application-specific configuration.
+&nbsp; * &lt;p&gt;
+&nbsp; * The service methods perform various validation checks, such as ensuring the
+&nbsp; * user&#39;s age is legal and the email is not already taken, before performing the
+&nbsp; * requested operations.
+&nbsp; * Also operations are performed in a transactional way.
+&nbsp; *
+&nbsp; * @author Evhen Malysh
+&nbsp; */
+&nbsp;@Service
+&nbsp;@RequiredArgsConstructor
+&nbsp;public class UserServiceImpl implements UserService {
+&nbsp;
+&nbsp;    private final UserRepository userRepository;
+&nbsp;    private final UserConstraints userConstraints;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Saves a new user to the system.
+&nbsp;     *
+&nbsp;     * @param userToRegister the user to be registered
+&nbsp;     * @return the saved user
+&nbsp;     * @throws EntityAlreadyExistsException if email is already taken
+&nbsp;     *                                      in the database
+&nbsp;     * @throws UserValidationException      if age validation fails
+&nbsp;     */
+&nbsp;    @Transactional
+&nbsp;    @Override
+&nbsp;    public User save(User userToRegister) {
+<b class="fc">&nbsp;        assertThatAgeIsLegal(userToRegister);</b>
+<b class="fc">&nbsp;        assertThatEmailNotTaken(userToRegister.getEmail());</b>
+&nbsp;
+<b class="fc">&nbsp;        return userRepository.save(userToRegister);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves a paginated list of all users.
+&nbsp;     * &lt;/p&gt;
+&nbsp;     * If {@code pageable} is null, using default values for sorting and paging.
+&nbsp;     * If 0 or negative number passed as page size, then it will be set to 10.
+&nbsp;     * If the result is empty, returns an empty page.
+&nbsp;     *
+&nbsp;     * @param pageable  the pagination parameters
+&nbsp;     * @param dateRange date range filter for filtering users by age
+&nbsp;     * @return a page of users
+&nbsp;     */
+&nbsp;    @Transactional(readOnly = true)
+&nbsp;    @Override
+&nbsp;    public Page&lt;User&gt; getAll(Pageable pageable, DateRange dateRange) {
+<b class="fc">&nbsp;        return userRepository.findAll(inRange(dateRange), pageable);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves a user by their unique identifier.
+&nbsp;     *
+&nbsp;     * @param id the unique identifier of the user to retrieve
+&nbsp;     * @return the user with the specified ID
+&nbsp;     * @throws EntityNotFoundException if no user is found with the specified ID
+&nbsp;     */
+&nbsp;    @Transactional(readOnly = true)
+&nbsp;    @Override
+&nbsp;    public User getById(Long id) {
+<b class="fc">&nbsp;        var errorMessage = String.format(&quot;User with id %d was not found&quot;, id);</b>
+<b class="fc">&nbsp;        return userRepository.findById(id)</b>
+<b class="fc">&nbsp;                .orElseThrow(() -&gt; new EntityNotFoundException(errorMessage));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Updates an existing user with the provided user data.
+&nbsp;     * &lt;/p&gt;
+&nbsp;     * This method should not be used. Instead, use {@link #updateEmail} and
+&nbsp;     * {@link #updateAddress} methods separately.
+&nbsp;     * &lt;p&gt;
+&nbsp;     * This method is kept for test assignment purposes only.
+&nbsp;     *
+&nbsp;     * @param id   the ID of the user to update
+&nbsp;     * @param user the updated user data
+&nbsp;     * @return the updated user
+&nbsp;     * @throws EntityNotFoundException      if no user found with the specified ID
+&nbsp;     * @throws EntityAlreadyExistsException if the new email is already registered
+&nbsp;     * @throws UserValidationException      if the user&#39;s age is below the required
+&nbsp;     *                                      age
+&nbsp;     */
+&nbsp;    @Transactional
+&nbsp;    @Override
+&nbsp;    public User updateById(Long id, User user) {
+<b class="fc">&nbsp;        var existingUser = getById(id);</b>
+<b class="fc">&nbsp;        existingUser.setFirstName(user.getFirstName());</b>
+<b class="fc">&nbsp;        existingUser.setLastName(user.getLastName());</b>
+<b class="fc">&nbsp;        existingUser.setAddress(user.getAddress());</b>
+<b class="fc">&nbsp;        existingUser.setPhone(user.getPhone());</b>
+&nbsp;
+<b class="fc">&nbsp;        var existingBirthDate = existingUser.getBirthDate();</b>
+<b class="fc">&nbsp;        var birthDateToUpdate = user.getBirthDate();</b>
+<b class="fc">&nbsp;        if (!Objects.equals(existingBirthDate, birthDateToUpdate)) {</b>
+<b class="fc">&nbsp;            assertThatAgeIsLegal(user);</b>
+<b class="fc">&nbsp;            existingUser.setBirthDate(user.getBirthDate());</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        var existingEmail = existingUser.getEmail();</b>
+<b class="fc">&nbsp;        var emailToUpdate = user.getEmail();</b>
+<b class="pc">&nbsp;        if (!Objects.equals(existingEmail, emailToUpdate)) {</b>
+<b class="fc">&nbsp;            assertThatEmailNotTaken(emailToUpdate);</b>
+<b class="fc">&nbsp;            existingUser.setEmail(user.getEmail());</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        return existingUser;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Updates the email of an existing user.
+&nbsp;     *
+&nbsp;     * @param id    The ID of the user to update.
+&nbsp;     * @param email The new email address to set for the user.
+&nbsp;     * @return The updated user entity.
+&nbsp;     * @throws EntityAlreadyExistsException if the new email is already registered
+&nbsp;     *                                      to another user.
+&nbsp;     */
+&nbsp;    @Transactional
+&nbsp;    @Override
+&nbsp;    public User updateEmail(Long id, String email) {
+<b class="fc">&nbsp;        assertThatEmailNotTaken(email);</b>
+&nbsp;
+<b class="fc">&nbsp;        var existingUser = getById(id);</b>
+<b class="fc">&nbsp;        existingUser.setEmail(email);</b>
+<b class="fc">&nbsp;        return existingUser;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Updates the address of the user with the specified ID.
+&nbsp;     *
+&nbsp;     * @param id      the ID of the user whose address should be updated
+&nbsp;     * @param address the new address to set for the user
+&nbsp;     * @return the updated user with the new address
+&nbsp;     * @throws EntityNotFoundException if no user is found with the specified ID
+&nbsp;     */
+&nbsp;    @Transactional
+&nbsp;    @Override
+&nbsp;    public User updateAddress(Long id, Address address) {
+<b class="fc">&nbsp;        var existingUser = getById(id);</b>
+<b class="fc">&nbsp;        existingUser.setAddress(address);</b>
+<b class="fc">&nbsp;        return existingUser;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Deletes the users address by the specified user ID.
+&nbsp;     *
+&nbsp;     * @param id the ID of the user
+&nbsp;     * @throws EntityNotFoundException if no user is found with the specified ID
+&nbsp;     */
+&nbsp;    @Transactional
+&nbsp;    @Override
+&nbsp;    public void deleteUsersAddress(Long id) {
+<b class="fc">&nbsp;        var existingUser = getById(id);</b>
+<b class="fc">&nbsp;        existingUser.setAddress(null);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Transactional
+&nbsp;    @Override
+&nbsp;    public User updatePhone(Long id, Phone phone) {
+<b class="nc">&nbsp;       var user = getById(id);</b>
+<b class="nc">&nbsp;       user.setPhone(user.getPhone());</b>
+<b class="nc">&nbsp;       return user;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Deletes the user with the specified ID.
+&nbsp;     *
+&nbsp;     * @param id the ID of the user to delete
+&nbsp;     * @throws EntityNotFoundException if no user is found with the specified ID
+&nbsp;     */
+&nbsp;    @Transactional
+&nbsp;    @Override
+&nbsp;    public void deleteById(Long id) {
+<b class="fc">&nbsp;        var existingUser = getById(id);</b>
+<b class="fc">&nbsp;        userRepository.delete(existingUser);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Checks if the provided email is already taken in the database.
+&nbsp;     *
+&nbsp;     * @param email the email to check for existence
+&nbsp;     * @throws EntityAlreadyExistsException if the email is already taken
+&nbsp;     */
+&nbsp;    private void assertThatEmailNotTaken(String email) {
+<b class="fc">&nbsp;        if (userRepository.existsByEmail(email)) {</b>
+<b class="fc">&nbsp;            throw new EntityAlreadyExistsException(&quot;User with this email already registered&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Checks if the provided age is legal, i.e., greater than or equal to the
+&nbsp;     * required minimum age.
+&nbsp;     *
+&nbsp;     * @param user the user whose age should be checked
+&nbsp;     * @throws UserValidationException if the user&#39;s age is below the required
+&nbsp;     *                                 age
+&nbsp;     */
+&nbsp;    private void assertThatAgeIsLegal(User user) {
+<b class="fc">&nbsp;        int requiredAge = userConstraints.getRequiredAge();</b>
+<b class="fc">&nbsp;        long userAge = ChronoUnit.YEARS.between(user.getBirthDate(), LocalDate.now());</b>
+<b class="fc">&nbsp;        if (userAge &lt; requiredAge) {</b>
+<b class="fc">&nbsp;            var message = String.format(&quot;Users age must be greater than or equal to %d&quot;, requiredAge);</b>
+<b class="fc">&nbsp;            throw new UserValidationException(message);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private Specification&lt;User&gt; inRange(DateRange dateRange) {
+<b class="fc">&nbsp;        if (dateRange == null || !dateRange.isSet()) return Specification.where(null);</b>
+&nbsp;
+<b class="fc">&nbsp;        return (root, query, criteriaBuilder) -&gt; {</b>
+<b class="fc">&nbsp;            query.distinct(true);</b>
+<b class="fc">&nbsp;            var birthDate = root.get(&quot;birthDate&quot;).as(LocalDate.class);</b>
+&nbsp;
+<b class="pc">&nbsp;            if ((dateRange.getFrom() == null)) {</b>
+<b class="nc">&nbsp;                return criteriaBuilder.lessThanOrEqualTo(birthDate, dateRange.getTo());</b>
+<b class="pc">&nbsp;            } else if (dateRange.getTo() == null) {</b>
+<b class="nc">&nbsp;                return criteriaBuilder.greaterThanOrEqualTo(birthDate, dateRange.getFrom());</b>
+&nbsp;            }
+<b class="fc">&nbsp;            return criteriaBuilder.between(birthDate, dateRange.from(), dateRange.to());</b>
+&nbsp;        };
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-04-30 13:13</div>
+</div>
+</body>
+</html>

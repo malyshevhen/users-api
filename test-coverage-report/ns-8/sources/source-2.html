@@ -1,0 +1,212 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > UpdateEmailForm</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.github.malyshevhen.dto</a>
+</div>
+
+<h1>Coverage Summary for Class: UpdateEmailForm (com.github.malyshevhen.dto)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UpdateEmailForm</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    44.4%
+  </span>
+  <span class="absValue">
+    (4/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    22.7%
+  </span>
+  <span class="absValue">
+    (5/22)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.github.malyshevhen.dto;
+&nbsp;
+&nbsp;import java.net.URI;
+&nbsp;import java.util.Objects;
+&nbsp;import com.fasterxml.jackson.annotation.JsonProperty;
+&nbsp;import com.fasterxml.jackson.annotation.JsonCreator;
+&nbsp;import org.openapitools.jackson.nullable.JsonNullable;
+&nbsp;import java.io.Serializable;
+&nbsp;import java.time.OffsetDateTime;
+&nbsp;import jakarta.validation.Valid;
+&nbsp;import jakarta.validation.constraints.*;
+&nbsp;import org.hibernate.validator.constraints.*;
+&nbsp;
+&nbsp;
+&nbsp;import java.util.*;
+&nbsp;import jakarta.annotation.Generated;
+&nbsp;
+&nbsp;/**
+&nbsp; * User email update form.
+&nbsp; */
+&nbsp;
+&nbsp;@Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;, date = &quot;2024-04-30T13:08:47.886427131+03:00[Europe/Kyiv]&quot;)
+&nbsp;public class UpdateEmailForm implements Serializable {
+&nbsp;
+&nbsp;  private static final long serialVersionUID = 1L;
+&nbsp;
+&nbsp;  private String email;
+&nbsp;
+&nbsp;  public UpdateEmailForm() {
+<b class="fc">&nbsp;    super();</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Constructor with only required parameters
+&nbsp;   */
+<b class="nc">&nbsp;  public UpdateEmailForm(String email) {</b>
+<b class="nc">&nbsp;    this.email = email;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public UpdateEmailForm email(String email) {
+<b class="fc">&nbsp;    this.email = email;</b>
+<b class="fc">&nbsp;    return this;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Users email
+&nbsp;   * @return email
+&nbsp;  */
+&nbsp;  @NotNull @Pattern(regexp = &quot;^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$&quot;) 
+&nbsp;  @JsonProperty(&quot;email&quot;)
+&nbsp;  public String getEmail() {
+<b class="fc">&nbsp;    return email;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public void setEmail(String email) {
+<b class="fc">&nbsp;    this.email = email;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  @Override
+&nbsp;  public boolean equals(Object o) {
+<b class="nc">&nbsp;    if (this == o) {</b>
+<b class="nc">&nbsp;      return true;</b>
+&nbsp;    }
+<b class="nc">&nbsp;    if (o == null || getClass() != o.getClass()) {</b>
+<b class="nc">&nbsp;      return false;</b>
+&nbsp;    }
+<b class="nc">&nbsp;    UpdateEmailForm updateEmailForm = (UpdateEmailForm) o;</b>
+<b class="nc">&nbsp;    return Objects.equals(this.email, updateEmailForm.email);</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  @Override
+&nbsp;  public int hashCode() {
+<b class="nc">&nbsp;    return Objects.hash(email);</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  @Override
+&nbsp;  public String toString() {
+<b class="nc">&nbsp;    StringBuilder sb = new StringBuilder();</b>
+<b class="nc">&nbsp;    sb.append(&quot;class UpdateEmailForm {\n&quot;);</b>
+<b class="nc">&nbsp;    sb.append(&quot;    email: &quot;).append(toIndentedString(email)).append(&quot;\n&quot;);</b>
+<b class="nc">&nbsp;    sb.append(&quot;}&quot;);</b>
+<b class="nc">&nbsp;    return sb.toString();</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Convert the given object to string with each line indented by 4 spaces
+&nbsp;   * (except the first line).
+&nbsp;   */
+&nbsp;  private String toIndentedString(Object o) {
+<b class="nc">&nbsp;    if (o == null) {</b>
+<b class="nc">&nbsp;      return &quot;null&quot;;</b>
+&nbsp;    }
+<b class="nc">&nbsp;    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</b>
+&nbsp;  }
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-04-30 13:13</div>
+</div>
+</body>
+</html>

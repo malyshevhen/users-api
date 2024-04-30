@@ -1,0 +1,124 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > UserMapper</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.github.malyshevhen.domain.mapper</a>
+</div>
+
+<h1>Coverage Summary for Class: UserMapper (com.github.malyshevhen.domain.mapper)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">UserMapper</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.github.malyshevhen.domain.mapper;
+&nbsp;
+&nbsp;import com.github.malyshevhen.domain.models.User;
+&nbsp;import org.mapstruct.Mapper;
+&nbsp;import org.mapstruct.Mapping;
+&nbsp;
+&nbsp;import com.github.malyshevhen.dto.UserInfo;
+&nbsp;import com.github.malyshevhen.dto.UserRegistrationForm;
+&nbsp;import com.github.malyshevhen.dto.UserUpdateForm;
+&nbsp;
+&nbsp;/**
+&nbsp; * Mapper interface for converting between User entities and DTO objects.
+&nbsp; * &lt;/p&gt;
+&nbsp; * Provides methods to map a UserRegistrationForm to a User entity, a
+&nbsp; * UserUpdateForm to a User entity, and a User entity to a UserInfo DTO.
+&nbsp; * The mapping ignores the id, createdAt, and updatedAt fields, as these are
+&nbsp; * typically managed by the application.
+&nbsp; * 
+&nbsp; * @author Evhen Malysh
+&nbsp; */
+&nbsp;@Mapper(componentModel = &quot;spring&quot;)
+&nbsp;public interface UserMapper {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Maps a {@link UserUpdateForm} to a {@link User} entity, ignoring the
+&nbsp;     * {@code id}, {@code createdAt}, and {@code updatedAt} properties.
+&nbsp;     *
+&nbsp;     * @param updateForm the {@link UserUpdateForm} to map from
+&nbsp;     * @return the mapped {@link User} entity
+&nbsp;     */
+&nbsp;    @Mapping(target = &quot;id&quot;, ignore = true)
+&nbsp;    @Mapping(target = &quot;createdAt&quot;, ignore = true)
+&nbsp;    @Mapping(target = &quot;updatedAt&quot;, ignore = true)
+&nbsp;    User toUser(UserRegistrationForm registrationForm);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Maps a {@link UserUpdateForm} to a {@link User} entity.
+&nbsp;     * The {@code id}, {@code createdAt}, and {@code updatedAt} fields are ignored
+&nbsp;     * during the mapping.
+&nbsp;     *
+&nbsp;     * @param updateForm the {@link UserUpdateForm} to map from
+&nbsp;     * @return the mapped {@link User} entity
+&nbsp;     */
+&nbsp;    @Mapping(target = &quot;id&quot;, ignore = true)
+&nbsp;    @Mapping(target = &quot;createdAt&quot;, ignore = true)
+&nbsp;    @Mapping(target = &quot;updatedAt&quot;, ignore = true)
+&nbsp;    User toUser(UserUpdateForm updateForm);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Converts a {@link User} entity to a {@link UserInfo} data transfer object.
+&nbsp;     *
+&nbsp;     * @param user the {@link User} entity to convert
+&nbsp;     * @return the corresponding {@link UserInfo} data transfer object
+&nbsp;     */
+&nbsp;    UserInfo toUserInfo(User user);
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-04-30 13:13</div>
+</div>
+</body>
+</html>

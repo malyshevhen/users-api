@@ -1,0 +1,241 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > User</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.github.malyshevhen.domain.models</a>
+</div>
+
+<h1>Coverage Summary for Class: User (com.github.malyshevhen.domain.models)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">User</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (7/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    64.3%
+  </span>
+  <span class="absValue">
+    (9/14)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">User$HibernateInstantiator$PTxTwUHA</td>
+  </tr>
+  <tr>
+    <td class="name">User$HibernateProxy$Vv4rLdYn</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (7/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    64.3%
+  </span>
+  <span class="absValue">
+    (9/14)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.github.malyshevhen.domain.models;
+&nbsp;
+&nbsp;import static jakarta.persistence.CascadeType.ALL;
+&nbsp;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.time.LocalDateTime;
+&nbsp;import java.util.Objects;
+&nbsp;
+&nbsp;import org.hibernate.annotations.CreationTimestamp;
+&nbsp;import org.hibernate.annotations.UpdateTimestamp;
+&nbsp;import org.hibernate.proxy.HibernateProxy;
+&nbsp;
+&nbsp;import jakarta.annotation.Nullable;
+&nbsp;import jakarta.persistence.Column;
+&nbsp;import jakarta.persistence.Entity;
+&nbsp;import jakarta.persistence.GeneratedValue;
+&nbsp;import jakarta.persistence.GenerationType;
+&nbsp;import jakarta.persistence.Id;
+&nbsp;import jakarta.persistence.JoinColumn;
+&nbsp;import jakarta.persistence.OneToOne;
+&nbsp;import jakarta.persistence.Table;
+&nbsp;import jakarta.validation.constraints.NotBlank;
+&nbsp;import jakarta.validation.constraints.NotNull;
+&nbsp;import jakarta.validation.constraints.Past;
+&nbsp;import jakarta.validation.constraints.Pattern;
+&nbsp;import lombok.AllArgsConstructor;
+&nbsp;import lombok.Builder;
+&nbsp;import lombok.Getter;
+&nbsp;import lombok.NoArgsConstructor;
+&nbsp;import lombok.Setter;
+&nbsp;import lombok.ToString;
+&nbsp;
+&nbsp;@Entity
+&nbsp;@Table(name = &quot;users&quot;)
+&nbsp;@Getter
+&nbsp;@Setter
+&nbsp;@Builder
+&nbsp;@AllArgsConstructor
+&nbsp;@NoArgsConstructor
+&nbsp;@ToString
+&nbsp;public class User {
+&nbsp;
+&nbsp;    @Id
+&nbsp;    @GeneratedValue(strategy = GenerationType.IDENTITY)
+&nbsp;    @Column(name = &quot;id&quot;, nullable = false)
+&nbsp;    private Long id;
+&nbsp;
+&nbsp;    @NotNull
+&nbsp;    @Pattern(regexp = &quot;^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$&quot;)
+&nbsp;    @Column(name = &quot;email&quot;, nullable = false, unique = true)
+&nbsp;    private String email;
+&nbsp;
+&nbsp;    @NotNull
+&nbsp;    @NotBlank
+&nbsp;    @Column(name = &quot;first_name&quot;, nullable = false)
+&nbsp;    private String firstName;
+&nbsp;
+&nbsp;    @NotNull
+&nbsp;    @NotBlank
+&nbsp;    @Column(name = &quot;last_name&quot;, nullable = false)
+&nbsp;    private String lastName;
+&nbsp;
+&nbsp;    @Past
+&nbsp;    @NotNull
+&nbsp;    @Column(name = &quot;birth_date&quot;, nullable = false)
+&nbsp;    private LocalDate birthDate;
+&nbsp;
+&nbsp;    @Nullable
+&nbsp;    @OneToOne(cascade = ALL)
+&nbsp;    @JoinColumn(name = &quot;address_id&quot;)
+&nbsp;    private Address address;
+&nbsp;
+&nbsp;    @Nullable
+&nbsp;    @Column(name = &quot;phone&quot;, unique = true)
+&nbsp;    private String phone;
+&nbsp;
+&nbsp;    @CreationTimestamp
+&nbsp;    private LocalDateTime createdAt;
+&nbsp;
+&nbsp;    @UpdateTimestamp
+&nbsp;    private LocalDateTime updatedAt;
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public final boolean equals(Object o) {
+<b class="fc">&nbsp;        if (this == o) return true;</b>
+<b class="pc">&nbsp;        if (o == null) return false;</b>
+<b class="pc">&nbsp;        Class&lt;?&gt; oEffectiveClass = o instanceof HibernateProxy proxy</b>
+<b class="nc">&nbsp;                ? proxy.getHibernateLazyInitializer().getPersistentClass()</b>
+<b class="fc">&nbsp;                : o.getClass();</b>
+<b class="pc">&nbsp;        Class&lt;?&gt; thisEffectiveClass = this instanceof HibernateProxy proxy</b>
+<b class="nc">&nbsp;                ? proxy.getHibernateLazyInitializer().getPersistentClass()</b>
+<b class="fc">&nbsp;                : this.getClass();</b>
+<b class="pc">&nbsp;        if (thisEffectiveClass != oEffectiveClass) return false;</b>
+<b class="fc">&nbsp;        User user = (User) o;</b>
+<b class="pc">&nbsp;        return getId() != null &amp;&amp; Objects.equals(getId(), user.getId());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public final int hashCode() {
+<b class="nc">&nbsp;        return this instanceof HibernateProxy proxy</b>
+<b class="nc">&nbsp;                ? proxy.getHibernateLazyInitializer().getPersistentClass().hashCode()</b>
+<b class="nc">&nbsp;                : getClass().hashCode();</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-04-30 13:13</div>
+</div>
+</body>
+</html>

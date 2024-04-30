@@ -1,0 +1,421 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > UsersPage</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.github.malyshevhen.dto</a>
+</div>
+
+<h1>Coverage Summary for Class: UsersPage (com.github.malyshevhen.dto)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UsersPage</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/36)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/28)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/78)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.github.malyshevhen.dto;
+&nbsp;
+&nbsp;import java.net.URI;
+&nbsp;import java.util.Objects;
+&nbsp;import com.fasterxml.jackson.annotation.JsonProperty;
+&nbsp;import com.fasterxml.jackson.annotation.JsonCreator;
+&nbsp;import com.github.malyshevhen.dto.UserInfo;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.Arrays;
+&nbsp;import java.util.List;
+&nbsp;import org.openapitools.jackson.nullable.JsonNullable;
+&nbsp;import java.io.Serializable;
+&nbsp;import java.time.OffsetDateTime;
+&nbsp;import jakarta.validation.Valid;
+&nbsp;import jakarta.validation.constraints.*;
+&nbsp;import org.hibernate.validator.constraints.*;
+&nbsp;
+&nbsp;
+&nbsp;import java.util.*;
+&nbsp;import jakarta.annotation.Generated;
+&nbsp;
+&nbsp;/**
+&nbsp; * Object representing a page of users.
+&nbsp; */
+&nbsp;
+&nbsp;@Generated(value = &quot;org.openapitools.codegen.languages.SpringCodegen&quot;, date = &quot;2024-04-30T13:08:47.886427131+03:00[Europe/Kyiv]&quot;)
+<b class="nc">&nbsp;public class UsersPage implements Serializable {</b>
+&nbsp;
+&nbsp;  private static final long serialVersionUID = 1L;
+&nbsp;
+&nbsp;  @Valid
+&nbsp;  private List&lt;@Valid UserInfo&gt; content;
+&nbsp;
+&nbsp;  private org.springframework.data.domain.Pageable pageable;
+&nbsp;
+&nbsp;  private Integer totalPages;
+&nbsp;
+&nbsp;  private Long totalElements;
+&nbsp;
+&nbsp;  private Boolean last;
+&nbsp;
+&nbsp;  private Integer size;
+&nbsp;
+&nbsp;  private Integer number;
+&nbsp;
+&nbsp;  private Integer numberOfElements;
+&nbsp;
+&nbsp;  private Boolean first;
+&nbsp;
+&nbsp;  private Boolean empty;
+&nbsp;
+&nbsp;  public UsersPage content(List&lt;@Valid UserInfo&gt; content) {
+<b class="nc">&nbsp;    this.content = content;</b>
+<b class="nc">&nbsp;    return this;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public UsersPage addContentItem(UserInfo contentItem) {
+<b class="nc">&nbsp;    if (this.content == null) {</b>
+<b class="nc">&nbsp;      this.content = new ArrayList&lt;&gt;();</b>
+&nbsp;    }
+<b class="nc">&nbsp;    this.content.add(contentItem);</b>
+<b class="nc">&nbsp;    return this;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * List of users in the current page.
+&nbsp;   * @return content
+&nbsp;  */
+&nbsp;  @Valid 
+&nbsp;  @JsonProperty(&quot;content&quot;)
+&nbsp;  public List&lt;@Valid UserInfo&gt; getContent() {
+<b class="nc">&nbsp;    return content;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public void setContent(List&lt;@Valid UserInfo&gt; content) {
+<b class="nc">&nbsp;    this.content = content;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public UsersPage pageable(org.springframework.data.domain.Pageable pageable) {
+<b class="nc">&nbsp;    this.pageable = pageable;</b>
+<b class="nc">&nbsp;    return this;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Get pageable
+&nbsp;   * @return pageable
+&nbsp;  */
+&nbsp;  @Valid 
+&nbsp;  @JsonProperty(&quot;pageable&quot;)
+&nbsp;  public org.springframework.data.domain.Pageable getPageable() {
+<b class="nc">&nbsp;    return pageable;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public void setPageable(org.springframework.data.domain.Pageable pageable) {
+<b class="nc">&nbsp;    this.pageable = pageable;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public UsersPage totalPages(Integer totalPages) {
+<b class="nc">&nbsp;    this.totalPages = totalPages;</b>
+<b class="nc">&nbsp;    return this;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Total number of pages.
+&nbsp;   * @return totalPages
+&nbsp;  */
+&nbsp;  
+&nbsp;  @JsonProperty(&quot;totalPages&quot;)
+&nbsp;  public Integer getTotalPages() {
+<b class="nc">&nbsp;    return totalPages;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public void setTotalPages(Integer totalPages) {
+<b class="nc">&nbsp;    this.totalPages = totalPages;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public UsersPage totalElements(Long totalElements) {
+<b class="nc">&nbsp;    this.totalElements = totalElements;</b>
+<b class="nc">&nbsp;    return this;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Total number of users.
+&nbsp;   * @return totalElements
+&nbsp;  */
+&nbsp;  
+&nbsp;  @JsonProperty(&quot;totalElements&quot;)
+&nbsp;  public Long getTotalElements() {
+<b class="nc">&nbsp;    return totalElements;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public void setTotalElements(Long totalElements) {
+<b class="nc">&nbsp;    this.totalElements = totalElements;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public UsersPage last(Boolean last) {
+<b class="nc">&nbsp;    this.last = last;</b>
+<b class="nc">&nbsp;    return this;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Indicates if the current page is the last one.
+&nbsp;   * @return last
+&nbsp;  */
+&nbsp;  
+&nbsp;  @JsonProperty(&quot;last&quot;)
+&nbsp;  public Boolean getLast() {
+<b class="nc">&nbsp;    return last;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public void setLast(Boolean last) {
+<b class="nc">&nbsp;    this.last = last;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public UsersPage size(Integer size) {
+<b class="nc">&nbsp;    this.size = size;</b>
+<b class="nc">&nbsp;    return this;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Number of users in the current page.
+&nbsp;   * @return size
+&nbsp;  */
+&nbsp;  
+&nbsp;  @JsonProperty(&quot;size&quot;)
+&nbsp;  public Integer getSize() {
+<b class="nc">&nbsp;    return size;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public void setSize(Integer size) {
+<b class="nc">&nbsp;    this.size = size;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public UsersPage number(Integer number) {
+<b class="nc">&nbsp;    this.number = number;</b>
+<b class="nc">&nbsp;    return this;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Number of the current page.
+&nbsp;   * @return number
+&nbsp;  */
+&nbsp;  
+&nbsp;  @JsonProperty(&quot;number&quot;)
+&nbsp;  public Integer getNumber() {
+<b class="nc">&nbsp;    return number;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public void setNumber(Integer number) {
+<b class="nc">&nbsp;    this.number = number;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public UsersPage numberOfElements(Integer numberOfElements) {
+<b class="nc">&nbsp;    this.numberOfElements = numberOfElements;</b>
+<b class="nc">&nbsp;    return this;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Number of users in the current page.
+&nbsp;   * @return numberOfElements
+&nbsp;  */
+&nbsp;  
+&nbsp;  @JsonProperty(&quot;numberOfElements&quot;)
+&nbsp;  public Integer getNumberOfElements() {
+<b class="nc">&nbsp;    return numberOfElements;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public void setNumberOfElements(Integer numberOfElements) {
+<b class="nc">&nbsp;    this.numberOfElements = numberOfElements;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public UsersPage first(Boolean first) {
+<b class="nc">&nbsp;    this.first = first;</b>
+<b class="nc">&nbsp;    return this;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Indicates if the current page is the first one.
+&nbsp;   * @return first
+&nbsp;  */
+&nbsp;  
+&nbsp;  @JsonProperty(&quot;first&quot;)
+&nbsp;  public Boolean getFirst() {
+<b class="nc">&nbsp;    return first;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public void setFirst(Boolean first) {
+<b class="nc">&nbsp;    this.first = first;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public UsersPage empty(Boolean empty) {
+<b class="nc">&nbsp;    this.empty = empty;</b>
+<b class="nc">&nbsp;    return this;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Indicates if the page is empty.
+&nbsp;   * @return empty
+&nbsp;  */
+&nbsp;  
+&nbsp;  @JsonProperty(&quot;empty&quot;)
+&nbsp;  public Boolean getEmpty() {
+<b class="nc">&nbsp;    return empty;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  public void setEmpty(Boolean empty) {
+<b class="nc">&nbsp;    this.empty = empty;</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  @Override
+&nbsp;  public boolean equals(Object o) {
+<b class="nc">&nbsp;    if (this == o) {</b>
+<b class="nc">&nbsp;      return true;</b>
+&nbsp;    }
+<b class="nc">&nbsp;    if (o == null || getClass() != o.getClass()) {</b>
+<b class="nc">&nbsp;      return false;</b>
+&nbsp;    }
+<b class="nc">&nbsp;    UsersPage usersPage = (UsersPage) o;</b>
+<b class="nc">&nbsp;    return Objects.equals(this.content, usersPage.content) &amp;&amp;</b>
+<b class="nc">&nbsp;        Objects.equals(this.pageable, usersPage.pageable) &amp;&amp;</b>
+<b class="nc">&nbsp;        Objects.equals(this.totalPages, usersPage.totalPages) &amp;&amp;</b>
+<b class="nc">&nbsp;        Objects.equals(this.totalElements, usersPage.totalElements) &amp;&amp;</b>
+<b class="nc">&nbsp;        Objects.equals(this.last, usersPage.last) &amp;&amp;</b>
+<b class="nc">&nbsp;        Objects.equals(this.size, usersPage.size) &amp;&amp;</b>
+<b class="nc">&nbsp;        Objects.equals(this.number, usersPage.number) &amp;&amp;</b>
+<b class="nc">&nbsp;        Objects.equals(this.numberOfElements, usersPage.numberOfElements) &amp;&amp;</b>
+<b class="nc">&nbsp;        Objects.equals(this.first, usersPage.first) &amp;&amp;</b>
+<b class="nc">&nbsp;        Objects.equals(this.empty, usersPage.empty);</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  @Override
+&nbsp;  public int hashCode() {
+<b class="nc">&nbsp;    return Objects.hash(content, pageable, totalPages, totalElements, last, size, number, numberOfElements, first, empty);</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  @Override
+&nbsp;  public String toString() {
+<b class="nc">&nbsp;    StringBuilder sb = new StringBuilder();</b>
+<b class="nc">&nbsp;    sb.append(&quot;class UsersPage {\n&quot;);</b>
+<b class="nc">&nbsp;    sb.append(&quot;    content: &quot;).append(toIndentedString(content)).append(&quot;\n&quot;);</b>
+<b class="nc">&nbsp;    sb.append(&quot;    pageable: &quot;).append(toIndentedString(pageable)).append(&quot;\n&quot;);</b>
+<b class="nc">&nbsp;    sb.append(&quot;    totalPages: &quot;).append(toIndentedString(totalPages)).append(&quot;\n&quot;);</b>
+<b class="nc">&nbsp;    sb.append(&quot;    totalElements: &quot;).append(toIndentedString(totalElements)).append(&quot;\n&quot;);</b>
+<b class="nc">&nbsp;    sb.append(&quot;    last: &quot;).append(toIndentedString(last)).append(&quot;\n&quot;);</b>
+<b class="nc">&nbsp;    sb.append(&quot;    size: &quot;).append(toIndentedString(size)).append(&quot;\n&quot;);</b>
+<b class="nc">&nbsp;    sb.append(&quot;    number: &quot;).append(toIndentedString(number)).append(&quot;\n&quot;);</b>
+<b class="nc">&nbsp;    sb.append(&quot;    numberOfElements: &quot;).append(toIndentedString(numberOfElements)).append(&quot;\n&quot;);</b>
+<b class="nc">&nbsp;    sb.append(&quot;    first: &quot;).append(toIndentedString(first)).append(&quot;\n&quot;);</b>
+<b class="nc">&nbsp;    sb.append(&quot;    empty: &quot;).append(toIndentedString(empty)).append(&quot;\n&quot;);</b>
+<b class="nc">&nbsp;    sb.append(&quot;}&quot;);</b>
+<b class="nc">&nbsp;    return sb.toString();</b>
+&nbsp;  }
+&nbsp;
+&nbsp;  /**
+&nbsp;   * Convert the given object to string with each line indented by 4 spaces
+&nbsp;   * (except the first line).
+&nbsp;   */
+&nbsp;  private String toIndentedString(Object o) {
+<b class="nc">&nbsp;    if (o == null) {</b>
+<b class="nc">&nbsp;      return &quot;null&quot;;</b>
+&nbsp;    }
+<b class="nc">&nbsp;    return o.toString().replace(&quot;\n&quot;, &quot;\n    &quot;);</b>
+&nbsp;  }
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-04-30 13:13</div>
+</div>
+</body>
+</html>

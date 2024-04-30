@@ -1,0 +1,314 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > UserController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.github.malyshevhen.controllers</a>
+</div>
+
+<h1>Coverage Summary for Class: UserController (com.github.malyshevhen.controllers)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UserController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (9/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (27/27)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">UserController$$SpringCGLIB$$0</td>
+  </tr>
+  <tr>
+    <td class="name">UserController$$SpringCGLIB$$1</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (9/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (27/27)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.github.malyshevhen.controllers;
+&nbsp;
+&nbsp;import com.github.malyshevhen.dto.*;
+&nbsp;import org.springframework.data.domain.Page;
+&nbsp;import org.springframework.data.domain.Pageable;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.RestController;
+&nbsp;
+&nbsp;import com.github.malyshevhen.api.UsersApi;
+&nbsp;import com.github.malyshevhen.domain.models.Address;
+&nbsp;import com.github.malyshevhen.domain.dto.DateRange;
+&nbsp;import com.github.malyshevhen.domain.mapper.UserMapper;
+&nbsp;import com.github.malyshevhen.services.UserService;
+&nbsp;import lombok.RequiredArgsConstructor;
+&nbsp;
+&nbsp;/**
+&nbsp; * Provides a REST API for managing user-related operations, including
+&nbsp; * registration, retrieval, update, and deletion.
+&nbsp; *
+&nbsp; * @author Evhen Malysh
+&nbsp; */
+&nbsp;@RestController
+&nbsp;@RequiredArgsConstructor
+&nbsp;public class UserController implements UsersApi {
+&nbsp;
+&nbsp;    private final UserService userService;
+&nbsp;    private final UserMapper userMapper;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Registers a new user with the provided registration form data.
+&nbsp;     *
+&nbsp;     * @param userRegistrationForm the user registration form containing the
+&nbsp;     *                             necessary data to create a new user
+&nbsp;     * @return Response containing the newly registered user&#39;s information
+&nbsp;     *         and HTTP status:
+&nbsp;     *         Created - 201.
+&nbsp;     *         Bad request - 400. Invalid {@code email} or {@code birthDate},
+&nbsp;     *         or empty {@code firstName} or {@code lastName}
+&nbsp;     *         Internal server error -500.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public ResponseEntity&lt;UserInfo&gt; registerUser(UserRegistrationForm userRegistrationForm) {
+<b class="fc">&nbsp;        var userToRegister = userMapper.toUser(userRegistrationForm);</b>
+<b class="fc">&nbsp;        var registeredUser = userService.save(userToRegister);</b>
+<b class="fc">&nbsp;        var userInfo = userMapper.toUserInfo(registeredUser);</b>
+<b class="fc">&nbsp;        return ResponseEntity.status(HttpStatus.CREATED).body(userInfo);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves a paginated list of user information.
+&nbsp;     *
+&nbsp;     * @param pageable  the pagination parameters. It is optional. If not provided,
+&nbsp;     *                  default page size and 0-based index are used.
+&nbsp;     * @param dateRange the date range to filter users by. It is optional. If not
+&nbsp;     *                  provided, all users will be returned.
+&nbsp;     * @return a page of user information and HTTP status:
+&nbsp;     *         OK - 200.
+&nbsp;     *         Bad request. Invalid {@code pageable} parameters or {@code dateRange}
+&nbsp;     *         Internal server error -500.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public ResponseEntity&lt;Page&lt;UserInfo&gt;&gt; getAll(Pageable pageable, DateRange dateRange) {
+<b class="fc">&nbsp;        var users = userService.getAll(pageable, dateRange)</b>
+<b class="fc">&nbsp;                .map(userMapper::toUserInfo);</b>
+<b class="fc">&nbsp;        return ResponseEntity.ok(users);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieves a user by their unique identifier.
+&nbsp;     *
+&nbsp;     * @param id the unique identifier of the user to retrieve
+&nbsp;     * @return Response containing the user&#39;s information and HTTP status:
+&nbsp;     *         OK - 200. The user was found and returned.
+&nbsp;     *         Not Found - 404. No user was found with the given ID.
+&nbsp;     *         Internal Server Error - 500. An error occurred while retrieving the
+&nbsp;     *         user.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public ResponseEntity&lt;UserInfo&gt; getById(Long id) {
+<b class="fc">&nbsp;        var user = userService.getById(id);</b>
+<b class="fc">&nbsp;        var userInfo = userMapper.toUserInfo(user);</b>
+<b class="fc">&nbsp;        return ResponseEntity.ok(userInfo);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Updates an existing user by their unique identifier.
+&nbsp;     *
+&nbsp;     * @param id             the unique identifier of the user to update
+&nbsp;     * @param userUpdateForm the user update form containing the new data to update
+&nbsp;     *                       the user with
+&nbsp;     * @return Response containing the updated user&#39;s information and HTTP
+&nbsp;     *         status:
+&nbsp;     *         OK - 200. The user was successfully updated.
+&nbsp;     *         Not Found - 404. No user was found with the given ID.
+&nbsp;     *         Internal Server Error - 500. An error occurred while updating the
+&nbsp;     *         user.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public ResponseEntity&lt;UserInfo&gt; updateById(Long id, UserUpdateForm userUpdateForm) {
+<b class="fc">&nbsp;        var user = userMapper.toUser(userUpdateForm);</b>
+<b class="fc">&nbsp;        var updatedUser = userService.updateById(id, user);</b>
+<b class="fc">&nbsp;        var userInfo = userMapper.toUserInfo(updatedUser);</b>
+<b class="fc">&nbsp;        return ResponseEntity.ok(userInfo);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Updates the email address of an existing user by their unique identifier.
+&nbsp;     *
+&nbsp;     * @param id              the unique identifier of the user to update
+&nbsp;     * @param updateEmailForm the form containing the new email address to update
+&nbsp;     *                        the user with
+&nbsp;     * @return Response containing the updated user&#39;s information and HTTP
+&nbsp;     *         status:
+&nbsp;     *         OK - 200. The user&#39;s email was successfully updated.
+&nbsp;     *         Bad request. Email already taken.
+&nbsp;     *         Not Found - 404. No user was found with the given ID.
+&nbsp;     *         Internal Server Error - 500. An error occurred while updating the
+&nbsp;     *         user&#39;s email.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public ResponseEntity&lt;UserInfo&gt; updateUserEmail(Long id, UpdateEmailForm updateEmailForm) {
+<b class="fc">&nbsp;        var updatedUser = userService.updateEmail(id, updateEmailForm.getEmail());</b>
+<b class="fc">&nbsp;        var userInfo = userMapper.toUserInfo(updatedUser);</b>
+<b class="fc">&nbsp;        return ResponseEntity.ok(userInfo);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Updates the phone number of an existing user by their unique identifier.
+&nbsp;     *
+&nbsp;     * @param id    Users ID (required)
+&nbsp;     * @param phone phone (optional)
+&nbsp;     * @return Response containing the updated user&#39;s information and HTTP
+&nbsp;     *         status:
+&nbsp;     *         OK - 200. The user&#39;s phone was successfully updated.
+&nbsp;     *         Not Found - 404. No user was found with the given ID.
+&nbsp;     *         Internal Server Error - 500. An error occurred while updating the
+&nbsp;     *         user&#39;s email.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public ResponseEntity&lt;UserInfo&gt; updateUserPhone(Long id, Phone phone) {
+<b class="fc">&nbsp;        var updatedUser = userService.updatePhone(id, phone);</b>
+<b class="fc">&nbsp;        var userInfo = userMapper.toUserInfo(updatedUser);</b>
+<b class="fc">&nbsp;        return ResponseEntity.ok(userInfo);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Updates the address of an existing user by their unique identifier.
+&nbsp;     *
+&nbsp;     * @param id      the unique identifier of the user to update
+&nbsp;     * @param address the new address to update the user with
+&nbsp;     * @return Response containing the updated user&#39;s information and HTTP
+&nbsp;     *         status:
+&nbsp;     *         OK - 200. The user&#39;s address was successfully updated.
+&nbsp;     *         Not Found - 404. No user was found with the given ID.
+&nbsp;     *         Internal Server Error - 500. An error occurred while updating the
+&nbsp;     *         user&#39;s address.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public ResponseEntity&lt;UserInfo&gt; updateUserAddress(Long id, Address address) {
+<b class="fc">&nbsp;        var updatedUser = userService.updateAddress(id, address);</b>
+<b class="fc">&nbsp;        var userInfo = userMapper.toUserInfo(updatedUser);</b>
+<b class="fc">&nbsp;        return ResponseEntity.ok(userInfo);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Deletes a user by their unique identifier.
+&nbsp;     *
+&nbsp;     * @param id the unique identifier of the user to delete
+&nbsp;     * @return Response with HTTP status:
+&nbsp;     *         No Content - 204. The user was successfully deleted.
+&nbsp;     *         Not Found - 404. No user was found with the given ID.
+&nbsp;     *         Internal Server Error - 500. An error occurred while deleting the
+&nbsp;     *         user.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public ResponseEntity&lt;Void&gt; deleteById(Long id) {
+<b class="fc">&nbsp;        userService.deleteById(id);</b>
+<b class="fc">&nbsp;        return ResponseEntity.noContent().build();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Deletes a users address by users ID.
+&nbsp;     *
+&nbsp;     * @param id Users ID (required)
+&nbsp;     * @return Response with HTTP status:
+&nbsp;     *         No Content - 204. The user was successfully deleted.
+&nbsp;     *         Not Found - 404. No user was found with the given ID.
+&nbsp;     *         Internal Server Error - 500. An error occurred while deleting the
+&nbsp;     *         user.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public ResponseEntity&lt;Void&gt; deleteUserAddress(Long id) {
+<b class="fc">&nbsp;        userService.deleteUsersAddress(id);</b>
+<b class="fc">&nbsp;        return ResponseEntity.noContent().build();</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-04-30 13:13</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,144 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ApplicationConfig</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.github.malyshevhen.configs</a>
+</div>
+
+<h1>Coverage Summary for Class: ApplicationConfig (com.github.malyshevhen.configs)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ApplicationConfig</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.github.malyshevhen.configs;
+&nbsp;
+&nbsp;import org.springframework.boot.context.properties.EnableConfigurationProperties;
+&nbsp;import org.springframework.boot.jdbc.DataSourceBuilder;
+&nbsp;import org.springframework.context.annotation.Bean;
+&nbsp;import org.springframework.context.annotation.Configuration;
+&nbsp;import org.springframework.context.annotation.Profile;
+&nbsp;
+&nbsp;import javax.sql.DataSource;
+&nbsp;
+&nbsp;/**
+&nbsp; * Global application configuration.
+&nbsp; * 
+&nbsp; * @author Evhen Malysh
+&nbsp; */
+&nbsp;@Profile(&quot;!test&quot;)
+&nbsp;@Configuration
+&nbsp;@EnableConfigurationProperties
+<b class="nc">&nbsp;public class ApplicationConfig {</b>
+&nbsp;
+&nbsp;    @Bean
+&nbsp;    UserConstraints userConstraints() {
+<b class="nc">&nbsp;        return new UserConstraints();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Bean
+&nbsp;    DatasourceProperties datasourceProperties() {
+<b class="nc">&nbsp;        return new DatasourceProperties();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Bean
+&nbsp;    DataSource getDataSource(DatasourceProperties datasourceProperties) {
+<b class="nc">&nbsp;        return DataSourceBuilder.create()</b>
+<b class="nc">&nbsp;                .url(datasourceProperties.getUrl())</b>
+<b class="nc">&nbsp;                .username(datasourceProperties.getUsername())</b>
+<b class="nc">&nbsp;                .password(datasourceProperties.getPassword())</b>
+<b class="nc">&nbsp;                .build();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-04-30 13:13</div>
+</div>
+</body>
+</html>

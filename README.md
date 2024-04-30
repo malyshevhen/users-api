@@ -1,8 +1,8 @@
-# Users API Serve 👨‍✈r
+# Users API Server 👨‍✈
 
 # Table of Contents
 
-- [Users API Serve 👨‍✈r](#users-api-serve-r)
+- [Users API Server 👨‍✈](#users-api-serve-r)
 - [Table of Contents](#table-of-contents)
 - [Java practical test assignment](#java-practical-test-assignment)
   - [The task has two parts:](#the-task-has-two-parts)
@@ -56,7 +56,7 @@
 **we assess only those assignments where all requirements are implemented**
 
 ## Task completion description:
-In this project I use OpenAPI specification as source of true.
+In this project I use **OpenAPI specification as _source of true_**.
 Based on this I use openapi-generator to generate contract for RESTfull controller and DTOs.
 Using this approach all team members can be sure that we place on the same point, and docks is 100% compatible with our API.
 
@@ -233,6 +233,8 @@ DELETE /api/users/{id}/address -- Deletes only address field of an existing user
 ```
 
 ### Tests
+
+The project includes comprehensive **test coverage**, with various types of tests such as unit tests, integration tests, and end-to-end tests. The test coverage report can be found at [test-coverage-report/index.html](test-coverage-report/index.html).
 
 1. The `UserControllerTest` class is a unit test suite for the `UserController` class in a Spring Boot application. It tests various scenarios related to user management, including user registration, retrieval, updating, and deletion.<br>
 The test class is annotated with `@WebMvcTest` to load only the web layer and mock the service layer. It also imports the `UserMapperImpl` class for mapping between domain models and DTOs.<br>

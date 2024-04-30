@@ -1,0 +1,204 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > UserService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.github.malyshevhen.services</a>
+</div>
+
+<h1>Coverage Summary for Class: UserService (com.github.malyshevhen.services)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+</tr>
+  <tr>
+    <td class="name">UserService$MockitoMock$mX9HOhBZ</td>
+  </tr>
+  <tr>
+    <td class="name">UserService$MockitoMock$mX9HOhBZ$auxiliary$mFtLNrO0</td>
+  </tr>
+  <tr>
+    <td class="name">UserService$MockitoMock$mX9HOhBZ$auxiliary$toHtq6OF</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.github.malyshevhen.services;
+&nbsp;
+&nbsp;import com.github.malyshevhen.domain.dto.DateRange;
+&nbsp;import com.github.malyshevhen.dto.Phone;
+&nbsp;import org.springframework.data.domain.Page;
+&nbsp;import org.springframework.data.domain.Pageable;
+&nbsp;import org.springframework.validation.annotation.Validated;
+&nbsp;
+&nbsp;import com.github.malyshevhen.exceptions.EntityAlreadyExistsException;
+&nbsp;import com.github.malyshevhen.exceptions.EntityNotFoundException;
+&nbsp;import com.github.malyshevhen.domain.models.Address;
+&nbsp;import com.github.malyshevhen.domain.models.User;
+&nbsp;
+&nbsp;import jakarta.validation.Valid;
+&nbsp;import jakarta.validation.constraints.NotNull;
+&nbsp;
+&nbsp;/**
+&nbsp; * Provides methods for managing user data, including creating, retrieving,
+&nbsp; * updating, and deleting users.
+&nbsp; *
+&nbsp; * @author Evhen Malysh
+&nbsp; */
+&nbsp;@Validated
+&nbsp;public interface UserService {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Saves a new user to the system.
+&nbsp;     *
+&nbsp;     * @param userToRegister the user to be registered
+&nbsp;     * @return the saved user
+&nbsp;     *
+&nbsp;     * @throws EntityAlreadyExistsException if email provided by the
+&nbsp;     *                registration form is already taken.
+&nbsp;     */
+&nbsp;    User save(@Valid User userToRegister) throws EntityAlreadyExistsException;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Retrieve page of users based on given pageable.
+&nbsp;     *
+&nbsp;     * @param pageable  the pagination details
+&nbsp;     * @param dateRange date filtering details
+&nbsp;     * @return a {@link Page} object containing the list of users
+&nbsp;     * and page details
+&nbsp;     */
+&nbsp;    Page&lt;User&gt; getAll(@NotNull Pageable pageable, @Valid DateRange dateRange);
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Gets the user by identifier.
+&nbsp;     *
+&nbsp;     * @param id The identifier
+&nbsp;     * @return The {@link User} by identifier.
+&nbsp;     *
+&nbsp;     * @throws EntityNotFoundException if the user for retrieve is not found
+&nbsp;     *                in DB
+&nbsp;     */
+&nbsp;    User getById(@NotNull Long id) throws EntityNotFoundException;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Update all user fields.
+&nbsp;     *
+&nbsp;     * @param id   The identifier
+&nbsp;     * @param user The parameters for users update
+&nbsp;     * @return Updated {@link User}
+&nbsp;     *
+&nbsp;     * @throws EntityAlreadyExistsException if the email to update is
+&nbsp;     * @throws EntityNotFoundException if the user to update is not found in
+&nbsp;     *                DB.
+&nbsp;     */
+&nbsp;    User updateById(@NotNull Long id, @Valid User user)
+&nbsp;            throws EntityNotFoundException, EntityAlreadyExistsException;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Delete user by unique identifier.
+&nbsp;     *
+&nbsp;     * @param id The identifier
+&nbsp;     *
+&nbsp;     * @throws EntityNotFoundException if the user is not found
+&nbsp;     */
+&nbsp;    void deleteById(@NotNull Long id) throws EntityNotFoundException;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Update users email field
+&nbsp;     *
+&nbsp;     * @param id    The identifier
+&nbsp;     * @param email The email
+&nbsp;     * @return Updated {@link User}
+&nbsp;     *
+&nbsp;     * @throws  EntityAlreadyExistsException if the email to update is
+&nbsp;     *                already taken.
+&nbsp;     * @throws  EntityNotFoundException if the user for update is not
+&nbsp;     *                found ib DB.
+&nbsp;     */
+&nbsp;    User updateEmail(Long id, String email) throws EntityNotFoundException, EntityAlreadyExistsException;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Update users address
+&nbsp;     *
+&nbsp;     * @param id      The identifier
+&nbsp;     * @param address The address
+&nbsp;     * @return Updated {@link User}
+&nbsp;     *
+&nbsp;     * @throws EntityNotFoundException if the user for update is not found
+&nbsp;     *                in DB.
+&nbsp;     */
+&nbsp;    User updateAddress(Long id, Address address) throws EntityNotFoundException;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Delete users address
+&nbsp;     *
+&nbsp;     * @param id The identifier if a user
+&nbsp;     * @throws EntityNotFoundException if the user was not found.
+&nbsp;     */
+&nbsp;    void deleteUsersAddress(Long id) throws EntityNotFoundException;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Update users phone number
+&nbsp;     *
+&nbsp;     * @param id      The identifier
+&nbsp;     * @param phone   Phone to update
+&nbsp;     * @return Updated {@link User}
+&nbsp;     *
+&nbsp;     * @throws EntityNotFoundException if the user for update is not found
+&nbsp;     *                in DB.
+&nbsp;     */
+&nbsp;    User updatePhone(Long id, Phone phone) throws EntityNotFoundException;
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-04-30 13:13</div>
+</div>
+</body>
+</html>
